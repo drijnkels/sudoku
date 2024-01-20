@@ -1,3 +1,4 @@
+import { stringToBoard } from "@/scripts/utils";
 import SudokuGame from "@/components/SudokuGame";
 
 const boards = [
@@ -5,9 +6,7 @@ const boards = [
   '380000004 704560000 000003060 000208015 010630040 007000008 176804309 005000206 820965401'
 ]
 export default function Home() {
-  const initialBoardData = boards[0]
-    .split(' ')
-    .map((row) => [...row].map(Number));
+  const initialBoardData = stringToBoard(boards[0]);
 
   return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
