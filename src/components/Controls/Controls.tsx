@@ -14,19 +14,28 @@ export default function Controls({setDigit, undoLastMove, emptyCell, handleToggl
     <div className='flex flex-col gap-4'>
       {/* Special controls to change board settings */}
       <div className='grid grid-cols-3 gap-2'>
-        <Button onClick={handleToggleNotesActive}>
-          <PencilIcon className={`w-7 h-7 mr-2 ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`} />
+        <Button onClick={handleToggleNotesActive} ariaToggle={true} ariaLabel='Toggle making notes'>
+          <div className='flex flex-col gap-1 font-size items-center text-center text-sm'>
+            <PencilIcon className={`w-6 h-6 ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`} />
+            Notes
+          </div>
         </Button>
-        <Button onClick={undoLastMove}>
-          <ArrowUturnLeftIcon className={"w-7 h-7 mr-2 text-zinc-400"} />
+        <Button onClick={undoLastMove} ariaLabel='Undo last move'>
+          <div className='flex flex-col gap-1 font-size items-center text-center text-sm'>
+            <ArrowUturnLeftIcon className={"w-6 h-6 text-zinc-400"}/>
+            Undo
+          </div>
         </Button>
-        <Button>
-          <TrashIcon onClick={emptyCell} className={"w-7 h-7 mr-2 text-zinc-400"} />
+        <Button onClick={emptyCell} ariaLabel='Empty cell contents'>
+          <div className='flex flex-col gap-1 font-size items-center text-center text-sm'>
+            <TrashIcon className={"w-6 h-6 text-zinc-400"}/>
+            Empty
+          </div>
         </Button>
       </div>
 
       {/* Change the value of a cell to a new digit */}
-      <div className='grid grid-cols-3 gap-2'>
+      <div className='grid grid-cols-3 gap-2 text-2xl'>
         {digits.map((d, digitIndex) =>
           <Button key={digitIndex} onClick={() => setDigit(d)}>{d}</Button>
         )}
