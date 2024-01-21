@@ -5,7 +5,6 @@ import { stringToBoard } from '@/scripts/utils';
 import { mockEasyBoard } from "../mocks/mockSudokus";
 import SudokuBoard from "@/components/Board/SudokuBoard";
 
-
 describe('Orga table test', () => {
   const notes:number[][][] = [];
   for (let row = 0; row < 9; row++) {

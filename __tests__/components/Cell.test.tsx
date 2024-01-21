@@ -3,9 +3,6 @@ import { render, screen } from '@testing-library/react'
 
 import Cell from "@/components/Board/Cell";
 
-
-// Cell({cellIndex, digit, highlight, selectCell, notes}
-
 describe('Cell', () => {
 
 	it('should not show any digit if its 0', () => {
