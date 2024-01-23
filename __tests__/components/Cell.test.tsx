@@ -13,6 +13,8 @@ describe('Cell', () => {
 				highlight=''
 				selectCell={() => {}}
         notes={[]}
+        errorCell={undefined}
+        gameComplete={false}
       />
     );
     for (let i = 1; i < 10; i++) {
@@ -28,6 +30,8 @@ describe('Cell', () => {
 				highlight=''
 				selectCell={() => {}}
         notes={[]}
+        errorCell={undefined}
+        gameComplete={false}
       />
     );
     expect(screen.getByText('8')).toBeDefined();
@@ -50,6 +54,8 @@ describe('Cell', () => {
 				highlight=''
 				selectCell={() => {}}
         notes={[1,2,3,4,5,6,7,8,9]}
+        errorCell={undefined}
+        gameComplete={false}
       />
     );
     for(let i = 1; i < 10; i++){
@@ -65,6 +71,8 @@ describe('Cell', () => {
 				highlight=''
 				selectCell={() => {}}
         notes={[1,2,3,4,5,6,7,8]}
+        errorCell={undefined}
+        gameComplete={false}
       />
     );
 		expect(screen.getByText(9)).toBeDefined()

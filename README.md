@@ -2,13 +2,19 @@
 A simple Sudoku app meant to work well on a mobile device without all the ads. Currently, a work in progress.
 
 **Todos:**
-- Error check on each new digit entered
-- Auto remove notes when a digit is placed
-- Mark a Soduku complete when all digits are in the correct place
+- Error check on each new digit entered with actual solutions
+- Let users switch Sudokus
+- Store progress per Sudoku
+- Add a timer
 - Actually check that it works well on a mobile device
 - Increase number of Sudoku available (Open source lib?)
 - Sort Sudoku by difficulty
 - Hints?
+
+**Recently finished**
+- Obvious error checks of a new digit with already entered digits
+- Remove notes on new digit
+- Add label and turn board green on completion
 
 ## Running locally
 

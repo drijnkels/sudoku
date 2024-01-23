@@ -5,7 +5,7 @@ import { stringToBoard } from '@/scripts/utils';
 import { mockEasyBoard } from "../mocks/mockSudokus";
 import SudokuBoard from "@/components/Board/SudokuBoard";
 
-describe('Orga table test', () => {
+describe('SudokuBoard', () => {
   const notes:number[][][] = [];
   for (let row = 0; row < 9; row++) {
     notes[row] = [];
@@ -23,6 +23,7 @@ describe('Orga table test', () => {
         notes={notes}
         activeCell={{r:9, c:9}}
         setActiveCell={() => {console.log('setActiveCell')}}
+        errors={[]}
       />
     );
   });

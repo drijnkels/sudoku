@@ -5,10 +5,12 @@ import { GridLoc } from "@/types/types";
 type SudokuBoardTypes = {
   boardData: number[][],
   notes: number[][][],
+  errors: GridLoc[],
+  gameComplete: boolean,
   activeCell: GridLoc,
   setActiveCell: (gridLoc: GridLoc) => void
 }
-export default function SudokuBoard({boardData, notes, activeCell, setActiveCell}: SudokuBoardTypes) {
+export default function SudokuBoard({boardData, notes, errors = [], gameComplete, activeCell, setActiveCell}: SudokuBoardTypes) {
   const squares = [[0,1,2], [3,4,5], [6,7,8]];
   const [activeSquare, setActiveSquare] = useState({rows: [9,9,9], columns: [9,9,9]});
 
@@ -49,7 +51,7 @@ export default function SudokuBoard({boardData, notes, activeCell, setActiveCell
 
     return '';
   }
-
+  console.log(errors);
   return (
     <div className='border-2 border-slate-700'>
       {
@@ -64,6 +66,8 @@ export default function SudokuBoard({boardData, notes, activeCell, setActiveCell
                   selectCell={() => handleSelectCell({r: rowIndex, c: cellIndex})}
                   highlight={highlightCell({r: rowIndex, c: cellIndex})}
                   notes={notes[rowIndex][cellIndex]}
+                  errorCell={errors.find((e) => e.r == rowIndex && e.c == cellIndex)}
+                  gameComplete={gameComplete}
                 />
               ))
             }

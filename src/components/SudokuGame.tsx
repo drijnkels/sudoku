@@ -5,6 +5,7 @@ import SudokuBoard from "@/components/Board/SudokuBoard";
 import Controls from "@/components/Controls/Controls";
 import {useState} from "react";
 import {GridLoc, History} from "@/types/types";
+import {validateBoard, validateMove} from "@/scripts/utils";
 
 export default function SudokuGame({initialBoardData}: {initialBoardData: number[][]}){
   const notes:number[][][] = [];
@@ -19,6 +20,10 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
   const [noteData, setNoteData] = useState(notes);
   const [notesActive, setNotesActive] = useState(false);
   const [activeCell, setActiveCell] = useState<GridLoc>({r: 9, c: 9});
+
+  const [gameComplete, setGameComplete] = useState(false);
+  const [errors, setErrors] = useState<GridLoc[]>([]);
+  const [numErrors, setNumErrors] = useState<number>(0);
 
   // Deep copy function to keep the initialBoardData clean
   const deepCopyBoard = (board: number[][]) => {
@@ -62,11 +67,40 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
     currentBoard[activeCell.r][activeCell.c] = digit;
     setBoardData([...currentBoard]);
 
+
+    let newErrorList = errors.filter((e) => e.c === activeCell.c && e.r === activeCell.r);
+
+    const moveWasValid = validateMove(boardData, activeCell);
+    if (!moveWasValid) {
+      newErrorList = [...errors,  activeCell];
+      setErrors(newErrorList);
+      setNumErrors(numErrors + 1);
+    }
+    setErrors(newErrorList);
+
     // Remove the notes
     eraseNotes();
 
     // Store the move in the game history, so we can revert later
     setGameHistory([...gameHistory, newMove]);
+
+    // Test for board completion
+    let board_complete = true;
+    for (let row of boardData) {
+      const open_cell = row.find((c) => c === 0);
+      if (open_cell) {
+        board_complete = false;
+        break;
+      }
+    }
+
+    if (board_complete) {
+      if (validateBoard(boardData)) {
+        setGameComplete(true);
+      } else {
+        // Indicate errors
+      }
+    }
   }
 
   // Change the notes for a cell, does not create a
@@ -101,6 +135,9 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
 
   // Remove a Digit and the notes of a cell
   const handleErase = () => {
+    if (gameComplete) {
+      return;
+    }
     // Erase the digit
     handleSetDigit(0);
 
@@ -109,8 +146,8 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
 
   // Depending on where notes are active mark Cell with new digit or handle the notes
   const handleClickedControlDigit = (digit: number) => {
-    // Do not allow users to set a Digit unless a Cell was selected
-    if (activeCell.r == 9){
+    // Do not allow users to set a Digit unless a Cell was selected and the game has not finished
+    if (activeCell.r == 9 || gameComplete){
       return;
     }
 
@@ -123,8 +160,8 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
 
   // Use the gameHistory array to revert Cells to a previous state
   const handleUndoLastMove = () => {
-    // Only allow last move if there are moves
-    if (gameHistory.length == 0){
+    // Only allow last move if there are moves and the game has not finished
+    if (gameHistory.length == 0 || gameComplete){
       return;
     }
     // Grab the data of the last move and remove it from the current gameHistory
@@ -153,12 +190,22 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
   return (
     <div className='flex gap-4'>
       <div>
-        <div className="font-bold text-lg mb-4">Sudoku - Easy</div>
+        <div className="mb-4">
+          <div className="font-bold text-lg">Sudoku - Easy</div>
+          <div>
+          {
+            gameComplete ?
+              `You finished the sudoku with ${numErrors} errors!` : `Errors: ${numErrors}`
+          }
+          </div>
+        </div>
         <SudokuBoard
           boardData={boardData}
           notes={noteData}
           activeCell={activeCell}
           setActiveCell={(gridLoc) => handleSetActiveCell(gridLoc)}
+          errors={errors}
+          gameComplete={gameComplete}
         />
       </div>
       <div>
