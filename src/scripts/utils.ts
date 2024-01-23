@@ -10,7 +10,36 @@ export const stringToBoard = (boardString: string) => {
             .map((row) => [...row].map(Number));
 }
 
+const validateGroup = (group: number[]) => {
+    group = group.filter((n) => n != 0);
+    return group.length === new Set(group).size;
+}
+
 export const validateMove = (boardData: number[][], gridLoc: GridLoc) => {
+    // Test row
+    if (!validateGroup(boardData[gridLoc.r])) {
+        return false;
+    }
+
+    const column = boardData.map((row) => row[gridLoc.c]);
+    if (!validateGroup(column)) {
+        return false;
+    }
+
+    const first_r = Math.floor(gridLoc.r / 3) * 3;
+    const first_c = Math.floor(gridLoc.c / 3) * 3;
+    const square = [];
+
+    // Check square
+    for (let r = first_r; r < first_r + 3; r++) {
+        for (let c = first_c; c < first_c + 3; c++) {
+            square.push(boardData[r][c]);
+        }
+    }
+    if (!validateGroup(square)) {
+        return false;
+    }
+
     return true;
 }
 
@@ -21,14 +50,9 @@ export const validateBoard = (boardData: number[][]) => {
         return false;
     }
 
-    const validateGroup = (group: number[]) => {
-        group = group.filter((n) => n != 0);
-        return group.length === new Set(group).size;
-    }
-
     // Check rows
     for (let row of boardData) {
-        if(!validateGroup(row)){
+        if (!validateGroup(row)) {
             return false;
         }
     }
@@ -36,7 +60,7 @@ export const validateBoard = (boardData: number[][]) => {
     // Check columns
     for (let col = 0; col < 9; col++) {
         const column = boardData.map((row) => row[col]);
-        if(!validateGroup(column)){
+        if (!validateGroup(column)) {
             return false;
         }
     }
@@ -51,7 +75,7 @@ export const validateBoard = (boardData: number[][]) => {
                 }
             }
 
-            if(!validateGroup(square)){
+            if (!validateGroup(square)) {
                 return false;
             }
         }

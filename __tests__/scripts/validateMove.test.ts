@@ -15,7 +15,7 @@ describe('validateMove', () => {
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(true);
   });
 
-  it('should return false mistake in a row', () => {
+  it('should return false on mistake in a row', () => {
     const boardData = stringToBoard(mockErrorBoard);
     const rToTest = 0;
     const cToTest = 1;
@@ -25,7 +25,7 @@ describe('validateMove', () => {
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(false);
   });
 
-  it('should return false mistake in a column', () => {
+  it('should return false on mistake in a column', () => {
     const boardData = stringToBoard(mockErrorBoard);
     const rToTest = 5;
     const cToTest = 2;
@@ -35,7 +35,7 @@ describe('validateMove', () => {
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(false);
   });
 
-  it('should return false mistake in a square', () => {
+  it('should return false on mistake in a square', () => {
     const boardData = stringToBoard(mockErrorBoard);
     const rToTest = 0;
     const cToTest = 1;
