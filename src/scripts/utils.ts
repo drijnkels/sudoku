@@ -1,3 +1,5 @@
+import {GridLoc} from "@/types/types";
+
 export const stringToBoard = (boardString: string) => {
     if (boardString.length != 89) {
         return false;
@@ -6,6 +8,10 @@ export const stringToBoard = (boardString: string) => {
             .split(' ')
             // @ts-ignore
             .map((row) => [...row].map(Number));
+}
+
+export const validateMove = (boardData: number[][], gridLoc: GridLoc) => {
+    return true;
 }
 
 export const validateBoard = (boardData: number[][]) => {
