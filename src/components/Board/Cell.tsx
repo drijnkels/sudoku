@@ -29,7 +29,7 @@ export default function Cell({cellIndex, digit, highlight, selectCell, errorCell
       <div
         onClick={selectCell}
         className={`relative flex items-center justify-center w-[65px] h-[65px] text-4xl transition-colors text-blue-700 font-bold
-          ${getBorderClass}
+          ${getBorderClass()}
           ${getBackgroundClass()}
       `}>
           {digit !== 0 ? digit : ''}
