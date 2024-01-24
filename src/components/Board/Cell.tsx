@@ -28,7 +28,7 @@ export default function Cell({cellIndex, digit, highlight, selectCell, errorCell
   return (
       <div
         onClick={selectCell}
-        className={`relative flex items-center justify-center w-[65px] h-[65px] text-4xl transition-colors text-blue-700 font-bold
+        className={`relative flex items-center justify-center w-[35px] h-[35px] text-xl md:w-[65px] md:h-[65px] md:text-4xl transition-colors text-blue-700 font-bold
           ${getBorderClass()}
           ${getBackgroundClass()}
       `}>
