@@ -1,17 +1,17 @@
 {
-  "name": "simple-sudoku",
+  "name": "wingu-sudoku",
   "description": "Simple sudoku app to enjoy a Sudoku on a mobile device without ads",
   "author": {
     "email": "info@wingusol.com",
     "name": "Daan Rijnkels"
   },
   "license": "Apache-2.0",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4009",
     "test": "vitest",
     "lint": "next lint"
   },
