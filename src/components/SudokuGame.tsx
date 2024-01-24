@@ -7,7 +7,7 @@ import {useState} from "react";
 import {GridLoc, History} from "@/types/types";
 import {validateBoard, validateMove} from "@/scripts/utils";
 
-export default function SudokuGame({initialBoardData}: {initialBoardData: number[][]}){
+export default function SudokuGame({ title, initialBoardData }: {title: string, initialBoardData: number[][]}){
   const notes:number[][][] = [];
   for (let row = 0; row < 9; row++) {
     notes[row] = [];
@@ -87,8 +87,7 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
     // Test for board completion
     let board_complete = true;
     for (let row of boardData) {
-      const open_cell = row.find((c) => c === 0);
-      if (open_cell) {
+      if (row.indexOf(0) > -1) {
         board_complete = false;
         break;
       }
@@ -188,10 +187,10 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
   }
 
   return (
-    <div className='flex gap-4'>
+    <div className='flex gap-4 flex-col lg:flex-row'>
       <div>
         <div className="mb-4">
-          <div className="font-bold text-lg">Sudoku - Easy</div>
+          <div className="font-bold text-lg">{title}</div>
           <div>
           {
             gameComplete ?
@@ -209,7 +208,7 @@ export default function SudokuGame({initialBoardData}: {initialBoardData: number
         />
       </div>
       <div>
-        <div className="font-bold text-lg mb-4">Controls</div>
+        <div className="font-bold text-lg mb-4 hidden lg:block">Controls</div>
         <Controls
           setDigit={(digit) => handleClickedControlDigit(digit)}
           handleToggleNotesActive={() => {handleToggleNotesActive()}}

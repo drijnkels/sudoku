@@ -1,4 +1,4 @@
-import {GridLoc} from "@/types/types";
+import {GridLoc, DigitCount} from "@/types/types";
 
 export const stringToBoard = (boardString: string) => {
     if (boardString.length != 89) {
@@ -82,4 +82,32 @@ export const validateBoard = (boardData: number[][]) => {
     }
 
     return true;
+}
+
+export const getRemainingDigits = (boardData: number[][]) => {
+    // Test board validity
+    if (!boardData) {
+        console.error('Invalid board');
+        return false;
+    }
+    const digits: DigitCount = {
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0,
+        '7': 0,
+        '8': 0,
+        '9': 0,
+    };
+
+    // Check rows
+    for (let row of boardData) {
+        for (let cell of row) {
+            digits[String(cell)] = digits[String(cell)] + 1;
+        }
+    }
+
+    return digits;
 }

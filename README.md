@@ -3,15 +3,16 @@ A simple Sudoku app meant to work well on a mobile device without all the ads. C
 
 **Todos:**
 - Error check on each new digit entered with actual solutions
-- Let users switch Sudokus
 - Store progress per Sudoku
 - Add a timer
-- Actually check that it works well on a mobile device
 - Increase number of Sudoku available (Open source lib?)
 - Sort Sudoku by difficulty
 - Hints?
 
 **Recently finished**
+- Make the app mobile / tablet friendly
+- Indicate that note mode is active by turning buttons green
+- Let users switch Sudokus
 - Obvious error checks of a new digit with already entered digits
 - Remove notes on new digit
 - Add label and turn board green on completion
