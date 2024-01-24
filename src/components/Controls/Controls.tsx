@@ -15,7 +15,7 @@ export default function Controls({setDigit, undoLastMove, emptyCell, handleToggl
     <div className='flex flex-col-reverse lg:flex-col gap-4'>
       {/* Special controls to change board settings */}
       <div className='grid grid-cols-9 lg:grid-cols-3 gap-2'>
-        <Button onClick={handleToggleNotesActive} ariaToggle={true} ariaLabel='Toggle making notes'>
+        <Button onClick={handleToggleNotesActive} customBg={notesActive ? 'bg-emerald-400' : 'bg-sky-100'} ariaToggle={true} ariaLabel='Toggle making notes'>
           <div className='flex flex-col gap-1 font-size items-center text-center text-sm'>
             <PencilIcon className={`${iconBtnClasses} ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`} />
             Notes
@@ -38,7 +38,7 @@ export default function Controls({setDigit, undoLastMove, emptyCell, handleToggl
       {/* Change the value of a cell to a new digit */}
       <div className='grid grid-cols-9 lg:grid-cols-3 gap-2 text-xl lg:text-2xl'>
         {digits.map((d, digitIndex) =>
-          <Button key={digitIndex} onClick={() => setDigit(d)}>{d}</Button>
+          <Button key={digitIndex} customBg={notesActive ? 'bg-emerald-400' : 'bg-sky-100'} onClick={() => setDigit(d)}>{d}</Button>
         )}
       </div>
     </div>
