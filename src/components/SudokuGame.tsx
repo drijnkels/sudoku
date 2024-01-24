@@ -87,8 +87,7 @@ export default function SudokuGame({ title, initialBoardData }: {title: string, 
     // Test for board completion
     let board_complete = true;
     for (let row of boardData) {
-      const open_cell = row.find((c) => c === 0);
-      if (open_cell) {
+      if (row.indexOf(0) > -1) {
         board_complete = false;
         break;
       }
