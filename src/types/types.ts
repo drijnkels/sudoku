@@ -23,3 +23,6 @@ export type History = {
   newDigit: number
 }
 
+export type DigitCount = {
+  [digit: string]: number;
+};
