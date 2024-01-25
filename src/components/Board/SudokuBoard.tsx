@@ -51,9 +51,9 @@ export default function SudokuBoard({boardData, notes, errors = [], gameComplete
 
     return '';
   }
-  console.log(errors);
+  console.log('sudokuBoard', errors);
   return (
-    <div className='border-2 border-slate-700'>
+    <div className='border-2 border-slate-700 w-fit m-auto'>
       {
         boardData.map((row, rowIndex) => (
           <div key={rowIndex} className={`row flex ${rowIndex % 3 === 2 && rowIndex != 8 ? 'border-slate-800 border-b' : 'border-slate-300 border-b'}`}>
