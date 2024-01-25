@@ -11,7 +11,10 @@ export const easyBoards: Puzzle[] = [
   {puzzle_id: 'easy_demo', url: '/easy/easy_demo', name: 'Completion Demo', board: '892645371 415873296 376921854 761589432 289734165 543162987 924356718 638217549 157498620', completion: '0%'},
 ];
 
-export const mediumBoard = [];
+export const mediumBoard = [
+  {puzzle_id: 'medium_1', url: '/medium/medium_1', name: 'Medium 1', board: '690003008 005002490 000408000 960000000 030604020 000000067 000205000 046900800 200700039'},
+  {puzzle_id: 'medium_2', url: '/medium/medium_2', name: 'Medium 2', board: '100060057 805000400 000005000 007600009 530908074 900004200 000100000 004000601 290050003'},
+];
 export const hardBoards = [];
 export const evilBoards = [
   {puzzle_id: 'evil_1', url:'/evil/evil_1', name: 'Puzzle 1', board: '090000005 100900030 002800970 804030000 910000053 000060807 041008300 060004001 300000020', completion: '0%'},
