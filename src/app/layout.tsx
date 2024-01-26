@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +25,9 @@ export default function RootLayout({
         </header>
         <main className="flex min-h-screen flex-col items-center w-full">
           {children}
+          <div className='mb-8 text-sm'>
+            Version: {publicRuntimeConfig?.version}
+          </div>
         </main>
       </body>
     </html>

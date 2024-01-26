@@ -11,7 +11,6 @@ import {Puzzle} from "@/types/types";
 
 export default function Home() {
   const searchParams = useSearchParams()
-  const preset_difficulty = searchParams.get('difficulty');
 
   const [difficulty, setDifficulty] = useState('none');
   const [activePuzzleSet, setActivePuzzleSet] = useState<Puzzle[] | []>([]);
