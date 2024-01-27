@@ -10,9 +10,9 @@ import PuzzleOverview from "@/components/Layout/PuzzleOverview";
 import {Puzzle} from "@/types/types";
 
 export default function Home() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
-  const [difficulty, setDifficulty] = useState('none');
+  const [difficulty, setDifficulty] = useState('');
   const [activePuzzleSet, setActivePuzzleSet] = useState<Puzzle[] | []>([]);
   const difficultyOptions = [
     {label: 'Easy', value: 'easy'},
