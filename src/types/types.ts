@@ -6,23 +6,27 @@ export type GridLoc = {
 }
 
 export type Puzzle = {
-  puzzle_id: string,
-  url: string,
-  name: string,
-  board: string,
-  completion: string
+  puzzle_id: string
+  url: string
+  name: string
+  board: string
 }
 
-export type Board = number[][];
+export type Solution = {
+  id: string
+  board: string
+}
+
+type CellState = 'free' | 'locked' | 'error';
+export type Cell = {digit: number, state: CellState, notes: number[] }
+export type Board = Cell[][];
 
 export type History = {
-  type: 'cell' | 'note'
-  cell: GridLoc
-  notes: number[],
-  previousDigit: number
-  newDigit: number
+  gridLoc: GridLoc,
+  currentState: Cell,
+  newState: Cell
 }
 
 export type DigitCount = {
-  [digit: string]: number;
+  [digit: string]: number
 };

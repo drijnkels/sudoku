@@ -1,26 +1,26 @@
-import { stringToBoard } from "@/scripts/utils";
+'use client';
+
 import SudokuGame from "@/components/SudokuGame";
 import { easyBoards } from "@/components/boards/boards";
+import { easySolutions } from "@/components/boards/solutions";
 
 export default function EasyPuzzle({ params }: { params: { id: string }}) {
+  // Load puzzle data
   const puzzle = easyBoards.find((board) => board.puzzle_id === params.id);
-  if (!puzzle) {
+  // Solution
+  const solution = easySolutions.find((solution) => solution.id === params.id);
+
+  if (!puzzle || !solution) {
     return (
       'invalid puzzle'
     )
   }
 
-  const initialBoardData = stringToBoard(puzzle.board);
-
   return (
     <div className='p-4'>
       <div className='w-full mb-4 text-slate-400'><a href='/?difficulty=easy'>{'<-- Return to puzzle selection'}</a></div>
       <div className="flex flex-col gap-4 max-w-fit">
-        {
-          (initialBoardData) ?
-            <SudokuGame title='Sudoku - Easy' initialBoardData={initialBoardData} /> :
-            ''
-        }
+        <SudokuGame title='Sudoku - Easy' puzzle={puzzle} solution={solution} />
       </div>
     </div>
   )
