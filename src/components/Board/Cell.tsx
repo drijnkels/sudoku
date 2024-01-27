@@ -1,5 +1,6 @@
 import Notes from "@/components/Board/Notes";
 import { Cell } from "@/types/types";
+import {memo} from "react";
 
 export type CellType = {
   cellIndex: number,
@@ -9,7 +10,7 @@ export type CellType = {
   solvedBoard: boolean,
 }
 
-export default function Cell({cellIndex, cellData, highlight, selectCell, solvedBoard} : CellType) {
+const Cell = memo(function Cell({cellIndex, cellData, highlight, selectCell, solvedBoard} : CellType) {
   const getBorderClass = () => {
     return cellIndex % 3 === 2 && cellIndex !== 8 ? 'border-r border-slate-800' : 'border-r border-slate-300';
   }
@@ -45,4 +46,6 @@ export default function Cell({cellIndex, cellData, highlight, selectCell, solved
         <Notes notes={cellData.digit === 0 ? cellData.notes : []} />
       </div>
   )
-}
+})
+
+export default Cell;
