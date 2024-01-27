@@ -18,14 +18,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} w-full`}>
+    <html lang="en" className='h-full'>
+      <body className={`${inter.className} w-full h-full flex flex-col`}>
         <header className='bg-blue-600 text-2xl font-bold text-white p-4 text-center'>
           Wingu Sudoku
         </header>
-        <main className="flex min-h-screen flex-col items-center w-full">
+        <main className="flex-1 flex flex-col items-center w-full">
+          <div className='flex-1'>
           {children}
-          <div className='mb-8 text-sm'>
+          </div>
+          <div className='mb-4 text-sm'>
             Version: {publicRuntimeConfig?.version}
           </div>
         </main>
