@@ -1,8 +1,9 @@
 'use client';
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { deepCopy, stringToBoard } from "@/scripts/utils";
 import { Board, Puzzle, Solution } from "@/types/types";
-import { useSudokuGame } from '@/hooks/useSudokuGame'
+import { useSudokuGame } from '@/hooks/useSudokuGame';
+import { clearPuzzleProgress } from "@/scripts/persistence";
 
 import SudokuBoard from "@/components/Board/SudokuBoard";
 import Controls from "@/components/Controls/Controls";
@@ -18,8 +19,6 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
   const initialBoardData: false | Board = stringToBoard(puzzle.board);
   const solutionBoard = stringToBoard(solution.board);
 
-  console.log('Render SudokuGame')
-
   const {
     boardData, setBoardData,
     activeCell,
@@ -32,47 +31,47 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
     handleErase,
     handleUndoLastMove
   } = useSudokuGame(
-    initialBoardData, solutionBoard
+    puzzle.puzzle_id, initialBoardData, solutionBoard
   )
 
-  // Use useEffect to initialize boardData with a deep copy of initialBoardData
-  useEffect(() => {
-    if (initialBoardData) {
-      setBoardData(deepCopy(initialBoardData));
-    }
-  });
+  const handleClearPuzzleProgress = () => {
+    clearPuzzleProgress(puzzle.puzzle_id);
+    setBoardData(deepCopy(initialBoardData));
+  }
 
   return (
-    <div className='flex gap-4 flex-col lg:flex-row'>
+    <div className='flex-1 flex flex-col lg:flex-row'>
       <NotesContext.Provider value={{ notesActive, setNotesActive }}>
-        <div>
-          <div className="mb-4">
-            <div className="font-bold text-lg">{title} - {completion}%</div>
-            <div>
-            {
-              solvedBoard ?
-                `You finished the sudoku with ${errors} errors!` : `Errors: ${errors}`
-            }
-            </div>
-          </div>
-          <SudokuBoard
-            boardData={boardData}
-            activeCell={activeCell}
-            setActiveCell={(gridLoc) => handleSetActiveCell(gridLoc)}
-            solvedBoard={solvedBoard}
-          />
+        <div className='flex-1 flex flex-col gap-4'>
           <div>
-            {/*<div onClick={() => resetProgress()}>Reset progress</div>*/}
+            <div className="mb-4">
+              <div className="font-bold text-lg">{title}:  {completion}%</div>
+              <div>
+              {
+                solvedBoard ?
+                  `You finished the sudoku with ${errors} errors!` : `Errors: ${errors}`
+              }
+              </div>
+            </div>
+            <SudokuBoard
+              boardData={boardData}
+              activeCell={activeCell}
+              setActiveCell={(gridLoc) => handleSetActiveCell(gridLoc)}
+              solvedBoard={solvedBoard}
+            />
           </div>
+
+          <Controls
+            setDigit={(digit) => handleClickControlDigit(digit)}
+            emptyCell={() => handleErase()}
+            undoLastMove={() => handleUndoLastMove()}
+          />
         </div>
 
-        <Controls
-          setDigit={(digit) => handleClickControlDigit(digit)}
-          emptyCell={() => handleErase()}
-          undoLastMove={() => handleUndoLastMove()}
-        />
-
-        </NotesContext.Provider>
+      </NotesContext.Provider>
+      <div className='text-sm text-center'>
+        <div onClick={() => handleClearPuzzleProgress()} className='underline text-red-600 cursor-pointer'>Clear puzzle progress</div>
+      </div>
     </div>
   )
 }

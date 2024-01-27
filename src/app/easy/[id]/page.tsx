@@ -17,9 +17,9 @@ export default function EasyPuzzle({ params }: { params: { id: string }}) {
   }
 
   return (
-    <div className='p-4'>
+    <div className='h-full flex flex-col p-4'>
       <div className='w-full mb-4 text-slate-400'><a href='/?difficulty=easy'>{'<-- Return to puzzle selection'}</a></div>
-      <div className="flex flex-col gap-4 max-w-fit">
+      <div className="flex-1 flex flex-col gap-4 max-w-fit">
         <SudokuGame title='Sudoku - Easy' puzzle={puzzle} solution={solution} />
       </div>
     </div>

@@ -1,22 +1,42 @@
-## Simple Sudoku
-A simple Sudoku app meant to work well on a mobile device without all the ads. Currently, a work in progress.
+## Wingu Sudoku
+A simple Sudoku app meant to work well on a mobile device without all the ads. A work in progress, currently the app 
+is usable and the puzzles can be solved. Progress is stored locally on a single device.
+The app does not require an internet connection once downloaded.
 
-**Todos:**
-- Store progress per Sudoku
+Play on: https://sudoku.wingusol.com/
+
+### Features
+- Instant error detection
+- 4 difficulty levels
+- Mobile / Tablet friendly
+- Notes
+- Saves progress on a single device
+
+
+### Development
+**Todo for v1:**
 - Add a timer
-- Increase number of Sudoku available (Open source lib?)
+- Improve buttons size and location for mobile
+
+**Todos future**
+- Conflict detection
+- Increase number of Sudoku available (Open source lib?) or use a generator
+- Add [capacitorjs](https://capacitorjs.com) + turn into PWA
 - Hints?
+- Settings
+  - Turn error detection on/off
+  - Turn conflict detection on/off
+  - Auto generate notes?
+- Add keyboard support
 
 **Recently finished**
+- Store progress per Sudoku
+- Clear progress on a puzzle
+- Clear progress on the entire app
 - Remove notes if a digit is entered on the same row, col or square
-- Error check on each new digit entered with actual solutions
-- Sort Sudoku by difficulty
-- Make the app mobile / tablet friendly
+- Error check on each new digit entered with actual solution
 - Indicate that note mode is active by turning buttons green
-- Let users switch Sudokus
-- Obvious error checks of a new digit with already entered digits
 - Remove notes on new digit
-- Add label and turn board green on completion
 
 ## Running locally
 

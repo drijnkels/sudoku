@@ -1,8 +1,11 @@
-import {Puzzle} from "@/types/types";
+import {Cell, Puzzle} from "@/types/types";
 import {stringToBoard} from "@/scripts/utils";
+import { loadFromLocalStorage } from "@/scripts/persistence";
 
 export default function PuzzlePreview({puzzle}: {puzzle: Puzzle}){
-  const boardData = stringToBoard(puzzle.board);
+  const storedBoardState = loadFromLocalStorage(puzzle.puzzle_id);
+  const boardData =  (storedBoardState ) ? storedBoardState.boardData : stringToBoard(puzzle.board);
+  const completion = (storedBoardState) ? storedBoardState.completion : 0;
   if(!boardData){
     return (
       <div>Not a valid board</div>
@@ -13,10 +16,17 @@ export default function PuzzlePreview({puzzle}: {puzzle: Puzzle}){
     return cellIndex % 3 === 2 && cellIndex !== 8 ? 'border-r border-slate-800' : 'border-r border-slate-300';
   }
 
+  const getCellState = (cellData: Cell) => {
+    if (cellData.state === 'locked') {
+      return 'text-slate-600 font-bold';
+    }
+    return 'text-blue-700 font-bold';
+  }
+
   return (
     <a href={puzzle.url} className='cursor-pointer'>
       <div className='text-center font-bold'>{puzzle.name}</div>
-      <div className='text-center text-sm mb-2'>Complete: {0}%</div>
+      <div className='text-center text-sm mb-2'>Complete: {completion}%</div>
       <div>
         <div className='border-2 border-slate-700 transition-colors hover:bg-sky-100'>
           {
@@ -28,6 +38,7 @@ export default function PuzzlePreview({puzzle}: {puzzle: Puzzle}){
                     <div key={cellIndex} className={`
                       relative flex items-center justify-center w-[20px] h-[20px] text-sm transition-colors text-blue-700 font-bold
                       ${getBorderClass(cellIndex)}
+                      ${getCellState(cellData)}
                       `}>
                       {cellData.digit !== 0 ? cellData.digit : ''}
                     </div>
