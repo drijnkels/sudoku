@@ -40,7 +40,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
     if (initialBoardData) {
       setBoardData(deepCopy(initialBoardData));
     }
-  });
+  }, []);
 
   return (
     <div className='flex gap-4 flex-col lg:flex-row'>
