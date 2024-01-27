@@ -10,7 +10,7 @@ describe('validateMove', () => {
     const rToTest = 0;
     const cToTest = 4;
     /* @ts-ignore */
-    boardData[rToTest][cToTest] = 4;
+    boardData[rToTest][cToTest].digit = 4;
     /* @ts-ignore */
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(true);
   });
@@ -20,7 +20,7 @@ describe('validateMove', () => {
     const rToTest = 0;
     const cToTest = 1;
     /* @ts-ignore */
-    boardData[rToTest][cToTest] = 8; // Gives two 8s in the top left corner
+    boardData[rToTest][cToTest].digit = 8; // Gives two 8s in the top left corner
     /* @ts-ignore */
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(false);
   });
@@ -30,7 +30,7 @@ describe('validateMove', () => {
     const rToTest = 5;
     const cToTest = 2;
     /* @ts-ignore */
-    boardData[rToTest][cToTest] = 4; // Gives two 4s in the third column
+    boardData[rToTest][cToTest].digit = 4; // Gives two 4s in the third column
     /* @ts-ignore */
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(false);
   });
@@ -40,7 +40,7 @@ describe('validateMove', () => {
     const rToTest = 0;
     const cToTest = 1;
     /* @ts-ignore */
-    boardData[rToTest][cToTest] = 4; // Gives two 4s in the top left square
+    boardData[rToTest][cToTest].digit = 4; // Gives two 4s in the top left square
     /* @ts-ignore */
     expect(validateMove(boardData, {r: rToTest, c: cToTest})).toBe(false);
   });

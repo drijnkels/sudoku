@@ -1,16 +1,14 @@
 import {ReactNode, useEffect, useState} from "react";
 import Cell from "@/components/Board/Cell";
-import { GridLoc } from "@/types/types";
+import {Board, GridLoc} from "@/types/types";
 
 type SudokuBoardTypes = {
-  boardData: number[][],
-  notes: number[][][],
-  errors: GridLoc[],
-  gameComplete: boolean,
+  boardData: Board,
+  solvedBoard: boolean,
   activeCell: GridLoc,
   setActiveCell: (gridLoc: GridLoc) => void
 }
-export default function SudokuBoard({boardData, notes, errors = [], gameComplete, activeCell, setActiveCell}: SudokuBoardTypes) {
+export default function SudokuBoard({boardData, solvedBoard, activeCell, setActiveCell}: SudokuBoardTypes) {
   const squares = [[0,1,2], [3,4,5], [6,7,8]];
   const [activeSquare, setActiveSquare] = useState({rows: [9,9,9], columns: [9,9,9]});
 
@@ -51,23 +49,20 @@ export default function SudokuBoard({boardData, notes, errors = [], gameComplete
 
     return '';
   }
-  console.log('sudokuBoard', errors);
   return (
     <div className='border-2 border-slate-700 w-fit m-auto'>
       {
         boardData.map((row, rowIndex) => (
           <div key={rowIndex} className={`row flex ${rowIndex % 3 === 2 && rowIndex != 8 ? 'border-slate-800 border-b' : 'border-slate-300 border-b'}`}>
             {
-              row.map((cell, cellIndex) => (
+              row.map((cellData, cellIndex) => (
                 <Cell
                   key={`${rowIndex}-${cellIndex}`}
                   cellIndex={cellIndex}
-                  digit={boardData[rowIndex][cellIndex]}
+                  cellData={boardData[rowIndex][cellIndex]}
                   selectCell={() => handleSelectCell({r: rowIndex, c: cellIndex})}
                   highlight={highlightCell({r: rowIndex, c: cellIndex})}
-                  notes={notes[rowIndex][cellIndex]}
-                  errorCell={errors.find((e) => e.r == rowIndex && e.c == cellIndex)}
-                  gameComplete={gameComplete}
+                  solvedBoard={solvedBoard}
                 />
               ))
             }

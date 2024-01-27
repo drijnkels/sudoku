@@ -14,7 +14,7 @@ describe('Controls', () => {
   it('should render all buttons', () => {
     let notesActive = false;
     render (
-      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} handleToggleNotesActive={mockHandleToggleNotesActive} notesActive={notesActive} />
+      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} />
     );
     for (let i = 1; i < 10; i++) {
       expect(screen.getByText(i)).toBeDefined();
@@ -25,23 +25,10 @@ describe('Controls', () => {
     expect(screen.getByText('Empty')).toBeDefined()
   });
 
-  it('should toggle notes', async () => {
-    let notesActive = false;
-    render (
-      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} handleToggleNotesActive={mockHandleToggleNotesActive} notesActive={notesActive} />
-    );
-
-    const button = screen.getByText('Notes');
-
-    await userEvent.click(button);
-
-    expect(mockHandleToggleNotesActive).toHaveBeenCalled();
-  });
-
   it('should undo last move', async () => {
     let notesActive = false;
     render (
-      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} handleToggleNotesActive={mockHandleToggleNotesActive} notesActive={notesActive} />
+      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} />
     );
 
     const button = screen.getByText('Undo');
@@ -54,7 +41,7 @@ describe('Controls', () => {
   it('should empty cell', async () => {
     let notesActive = false;
     render (
-      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} handleToggleNotesActive={mockHandleToggleNotesActive} notesActive={notesActive} />
+      <Controls setDigit={mockSetDigit} undoLastMove={mockUndoLastMove} emptyCell={mockEmptyCell} />
     );
 
     const button = screen.getByText('Empty');

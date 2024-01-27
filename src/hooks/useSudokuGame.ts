@@ -1,200 +1,166 @@
-import {useState, useCallback, useEffect} from 'react';
-import {Board, GridLoc, History} from "@/types/types";
-import {validateBoard, validateMove} from "@/scripts/utils";
+import {useState, useCallback, useEffect, useMemo} from 'react';
+import {Board, Cell, GridLoc } from "@/types/types";
+import {calculateCompletion, countEmptyCells, deepCopy, validateBoard,} from "@/scripts/utils";
 
-export const useSudokuGame = (initialBoardData: Board) => {
-  // Create note grid
-  const notes:number[][][] = [];
-  for (let row = 0; row < 9; row++) {
-    notes[row] = [];
-    for (let col = 0; col < 9; col++) {
-      notes[row][col] = [];
-    }
-  }
-
-  const [gameHistory, setGameHistory] = useState<History[]>([]);
-  const [boardData, setBoardData] = useState<number[][]>([]);
-  const [noteData, setNoteData] = useState(notes);
-  const [notesActive, setNotesActive] = useState(false);
+export const useSudokuGame = (initialBoardData: Board | false, solutionBoard: Board | false) => {
+  const [boardData, setBoardData] = useState<Board>([]);
+  const [gameHistory, setGameHistory] = useState<Board[]>([]);
   const [activeCell, setActiveCell] = useState<GridLoc>({r: 9, c: 9});
+  const [solvedBoard, setSolvedBoard] = useState(false);
+  const [notesActive, setNotesActive] = useState(false);
+  const [errors, setErrors] = useState(0);
+  const [completion, setCompletion] = useState(0);
 
-  const [gameComplete, setGameComplete] = useState(false);
-  const [errors, setErrors] = useState<GridLoc[]>([]);
-  const [numErrors, setNumErrors] = useState<number>(0);
+  const emptyCells = useMemo(() => countEmptyCells(initialBoardData), [initialBoardData]);
 
-  // Deep copy function to keep the initialBoardData clean
-  const deepCopyBoard = (board: number[][]) => {
-    return board.map(row => [...row]);
-  }
-
-  // Use useEffect to initialize boardData with a deep copy of initialBoardData
   useEffect(() => {
-    setBoardData(deepCopyBoard(initialBoardData));
-  }, [initialBoardData]);
+    if ( completion > 99 ) {
+      setSolvedBoard(validateBoard(boardData));
+    }
+  }, [completion, boardData]);
 
   // Set a Cell as active, active means its value can be changed or erased
   const handleSetActiveCell = useCallback((newCell: GridLoc) => {
     setActiveCell(newCell);
-  },[])
+  }, [])
 
-  const handleToggleNotesActive = useCallback(() => {
-    setNotesActive(!notesActive);
-  },[notesActive])
+  const recalculateCompletion = useCallback(() => {
+    if (initialBoardData) {
+      setCompletion(calculateCompletion(emptyCells, boardData));
+    }
+  }, [initialBoardData, emptyCells, boardData])
 
-  // Change a cell to a new digit,
-  // Create a gameHistory entry
-  const handleSetDigit = useCallback((digit: number) => {
-    // Get the current board
-    const currentBoard = boardData;
-    const currentDigit = currentBoard[activeCell.r][activeCell.c];
+  // Add a boardState to the gameHistory
+  const addMoveToHistory = useCallback((prevBoardState: Board) => {
+    const currentHistory = [...gameHistory];
+    setGameHistory([...currentHistory, prevBoardState]);
+  }, [gameHistory])
 
-    // Do not store the same move twice
-    if (currentDigit == digit) {
-      return;
+  // When a digit is placed in a Cell remove all notes of the given digit from the notes in
+  // Cells on the same row, column and square
+  const removeNotesAfterDigit = useCallback((currentBoardData: Cell[][], digit: number) => {
+    // remove digit out of row
+    for (let c = 0; c < currentBoardData[activeCell.r].length; c++) {
+      currentBoardData[activeCell.r][c].notes = currentBoardData[activeCell.r][c].notes.filter((n) => n != digit);
+    }
+    // Remove digit out of column
+    for (let r = 0; r < currentBoardData.length; r++) {
+      currentBoardData[r][activeCell.c].notes = currentBoardData[r][activeCell.c].notes.filter((n) => n != digit);
     }
 
-    if (initialBoardData[activeCell.r][activeCell.c] != 0) {
-      return;
-    }
-
-    // Create a move object so we can store it later
-    const newMove: History = {type: 'cell', cell: activeCell, notes: noteData[activeCell.r][activeCell.c], previousDigit: currentDigit, newDigit: digit};
-
-    // Update the board with the new digit
-    currentBoard[activeCell.r][activeCell.c] = digit;
-    setBoardData([...currentBoard]);
-
-
-    let newErrorList = errors.filter((e) => e.c === activeCell.c && e.r === activeCell.r);
-
-    const moveWasValid = validateMove(boardData, activeCell);
-    if (!moveWasValid) {
-      newErrorList = [...errors,  activeCell];
-      setErrors(newErrorList);
-      setNumErrors(numErrors + 1);
-    }
-    setErrors(newErrorList);
-
-    // Remove the notes
-    eraseNotes();
-
-    // Store the move in the game history, so we can revert later
-    setGameHistory([...gameHistory, newMove]);
-
-    // Test for board completion
-    let board_complete = true;
-    for (let row of boardData) {
-      if (row.indexOf(0) > -1) {
-        board_complete = false;
-        break;
+    // Remove notes out of the square
+    const first_r = Math.floor(activeCell.r / 3) * 3;
+    const first_c = Math.floor(activeCell.c / 3) * 3;
+    for (let r = first_r; r < first_r + 3; r++) {
+      for (let c = first_c; c < first_c + 3; c++) {
+        currentBoardData[r][c].notes = currentBoardData[r][c].notes.filter((n) => n != digit);
       }
     }
 
-    if (board_complete) {
-      if (validateBoard(boardData)) {
-        setGameComplete(true);
-      } else {
-        // Indicate errors
+    return currentBoardData;
+  }, [activeCell])
+
+  // Change a cell's value to a new digit
+  const setDigit = (digit: number) => {
+    let currentBoardData = [...boardData];
+    addMoveToHistory(deepCopy(boardData));
+
+    const currentCellData = currentBoardData[activeCell.r][activeCell.c];
+    currentCellData.digit = (currentCellData.digit === digit) ? 0 : digit;
+    currentCellData.state = 'free';
+
+    if ( solutionBoard ){
+      if (solutionBoard[activeCell.r][activeCell.c].digit !== digit && currentCellData.digit !== 0) {
+        currentCellData.state = 'error';
+        setErrors(errors + 1)
       }
     }
-  }, [boardData, activeCell, errors, numErrors, gameHistory])
 
-  // Change the notes for a cell, does not create a
-  const handleSetNote = (digit: number) => {
-    const currentNotes = noteData;
-    const currentNotesForCel = noteData[activeCell.r][activeCell.c];
+    currentBoardData = removeNotesAfterDigit(currentBoardData, digit);
 
-    // Create a move object so we can store it later
-    const newMove: History = {type: 'note', cell: activeCell, notes: currentNotesForCel, previousDigit: 0, newDigit: 0};
-    // Store the move in the game history, so we can revert later
-    setGameHistory([...gameHistory, newMove]);
+    // Update the board
+    currentBoardData[activeCell.r][activeCell.c] = currentCellData;
+    setBoardData([...currentBoardData]);
+
+    recalculateCompletion()
+  }
+
+  // Toggle a note on a cell
+  const toggleNote = (digit: number) => {
+    const currentBoardData = [...boardData];
+    addMoveToHistory(deepCopy(boardData));
+    const currentCellData = currentBoardData[activeCell.r][activeCell.c];
 
     // Add or remove the new note to the cell notes
-    if (currentNotesForCel.indexOf(digit) === -1) {
-      currentNotes[activeCell.r][activeCell.c] = [...currentNotesForCel, digit];
+    if (currentCellData.notes.indexOf(digit) === -1) {
+      currentCellData.notes = [...currentCellData.notes, digit];
     } else {
-      currentNotes[activeCell.r][activeCell.c] = currentNotesForCel.filter((n) => n != digit);
+      currentCellData.notes = currentCellData.notes.filter((n) => n != digit);
     }
 
-    // Update note data
-    setNoteData([...currentNotes]);
+    // Update the board
+    currentBoardData[activeCell.r][activeCell.c] = currentCellData;
+    setBoardData([...currentBoardData]);
   }
 
-  const eraseNotes = () => {
-    // Erase the notes
-    const currentNotes = noteData;
-    currentNotes[activeCell.r][activeCell.c] = [];
-
-    // Update note data
-    setNoteData([...currentNotes]);
-  }
-
-  // Remove a Digit and the notes of a cell
-  const handleErase = useCallback(() => {
-    if (gameComplete) {
+  // When a digit on the Controls is clicked and a valid Cell is selected
+  // Either change the value of the cell or the notes of the cell
+  const handleClickControlDigit = (digit: number) => {
+    const currentCellData = boardData[activeCell.r][activeCell.c];
+    // Cannot edit locked cells or if no cell is selected or if the game is finished
+    if (currentCellData.state == 'locked' || activeCell.r === 9 || solvedBoard) {
       return;
     }
-    // Erase the digit
-    handleSetDigit(0);
-
-    eraseNotes();
-  }, [gameComplete, activeCell])
-
-  // Depending on where notes are active mark Cell with new digit or handle the notes
-  const handleClickedControlDigit = useCallback((digit: number) => {
-    // Do not allow users to set a Digit unless a Cell was selected and the game has not finished
-    if (activeCell.r == 9 || gameComplete){
-      return;
-    }
-
     if (notesActive) {
-      handleSetNote(digit);
+      toggleNote(digit);
     } else {
-      handleSetDigit(digit);
+      setDigit(digit);
     }
-  }, [activeCell, gameComplete, notesActive])
+  }
 
-  // Use the gameHistory array to revert Cells to a previous state
+  // Remove all data from a Cell
+  const handleErase = () => {
+    const currentBoardData = [...boardData];
+    const currentCellData = currentBoardData[activeCell.r][activeCell.c];
+
+    // Cannot erase Game data or once the board is solved
+    if (currentCellData.state === 'locked' || solvedBoard) {
+      return;
+    }
+    addMoveToHistory(deepCopy(boardData));
+
+    currentCellData.digit = 0;
+    currentCellData.notes = [];
+    currentCellData.state = 'free';
+    currentBoardData[activeCell.r][activeCell.c] = currentCellData;
+
+    setBoardData([...currentBoardData]);
+  }
+
+  // Restore the board state to a previous state
   const handleUndoLastMove = useCallback(() => {
-    // Only allow last move if there are moves and the game has not finished
-    if (gameHistory.length == 0 || gameComplete){
-      return;
-    }
-    // Grab the data of the last move and remove it from the current gameHistory
-    const currentGameHistory = gameHistory;
-    const lastMove = currentGameHistory.pop();
-    setGameHistory([...currentGameHistory]);
-
-    // Make TS happy
-    if(!lastMove){
+    const currentHistory = [...gameHistory];
+    const lastBoardState = currentHistory.pop();
+    if (gameHistory.length === 0 || activeCell.r === 9 || !lastBoardState || solvedBoard) {
       return;
     }
 
-    if (lastMove.type == 'cell') {
-      // Grab the current state of the board, revert the changed cell to its previous state and update the board
-      const currentBoard = boardData;
-      currentBoard[lastMove.cell.r][lastMove.cell.c] = lastMove.previousDigit;
-      setBoardData([...currentBoard]);
-    }
-    if (lastMove.type == 'note' || lastMove.previousDigit === 0 || lastMove.newDigit === 0) {
-      const currentNoteData = noteData;
-      currentNoteData[lastMove.cell.r][lastMove.cell.c] = lastMove.notes;
-      setNoteData([...currentNoteData]);
-    }
-  }, [gameHistory, gameComplete, boardData, noteData])
+    setGameHistory([...currentHistory]);
+    setBoardData([...lastBoardState]);
+
+    recalculateCompletion()
+  }, [activeCell, gameHistory, solvedBoard, recalculateCompletion])
 
   return {
-    boardData,
-    noteData,
-    notesActive,
+    boardData, setBoardData,
     activeCell,
-    gameComplete,
+    solvedBoard,
+    notesActive, setNotesActive,
     errors,
-    numErrors,
+    completion,
     handleSetActiveCell,
-    handleToggleNotesActive,
+    handleClickControlDigit,
     handleErase,
-    handleClickedControlDigit,
-    handleUndoLastMove,
+    handleUndoLastMove
   }
 }

@@ -6,8 +6,8 @@ import { stringToBoard, validateBoard } from "@/scripts/utils";
 describe('validateSolutions', () => {
   it('all easy solutions should be valid board', () => {
     for(let solution of easySolutions) {
-      const boardData = stringToBoard(solution.solution);
-      console.log(solution.solution);
+      const boardData = stringToBoard(solution.board);
+      console.log(solution.board);
       /* @ts-ignore */
       expect(validateBoard(boardData)).toBe(true);
     }
@@ -15,8 +15,8 @@ describe('validateSolutions', () => {
 
   it('all medium solutions should be valid board', () => {
     for(let solution of mediumSolutions) {
-      const boardData = stringToBoard(solution.solution);
-      console.log(solution.solution);
+      const boardData = stringToBoard(solution.board);
+      console.log(solution.board);
       /* @ts-ignore */
       expect(validateBoard(boardData)).toBe(true);
     }
@@ -28,7 +28,7 @@ describe('validateSolutions', () => {
 
   it('all evil solutions should be valid board', () => {
     for(let solution of evilSolutions) {
-      const boardData = stringToBoard(solution.solution);
+      const boardData = stringToBoard(solution.board);
       /* @ts-ignore */
       expect(validateBoard(boardData)).toBe(true);
     }

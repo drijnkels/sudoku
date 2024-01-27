@@ -2,14 +2,15 @@
 A simple Sudoku app meant to work well on a mobile device without all the ads. Currently, a work in progress.
 
 **Todos:**
-- Error check on each new digit entered with actual solutions
 - Store progress per Sudoku
 - Add a timer
 - Increase number of Sudoku available (Open source lib?)
-- Sort Sudoku by difficulty
 - Hints?
 
 **Recently finished**
+- Remove notes if a digit is entered on the same row, col or square
+- Error check on each new digit entered with actual solutions
+- Sort Sudoku by difficulty
 - Make the app mobile / tablet friendly
 - Indicate that note mode is active by turning buttons green
 - Let users switch Sudokus
