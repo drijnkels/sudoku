@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 import Cell from "@/components/Board/Cell";
+import {number} from "prop-types";
 
 describe('Cell', () => {
 
@@ -9,12 +10,10 @@ describe('Cell', () => {
 		render (
       <Cell
 				cellIndex={3}
-				digit={0}
+        cellData={{digit: 0, state: 'free', notes: []}}
 				highlight=''
 				selectCell={() => {}}
-        notes={[]}
-        errorCell={undefined}
-        gameComplete={false}
+        solvedBoard={false}
       />
     );
     for (let i = 1; i < 10; i++) {
@@ -26,12 +25,10 @@ describe('Cell', () => {
     render (
       <Cell
 				cellIndex={2}
-				digit={8}
+        cellData={{digit: 8, state: 'free', notes: []}}
 				highlight=''
 				selectCell={() => {}}
-        notes={[]}
-        errorCell={undefined}
-        gameComplete={false}
+        solvedBoard={false}
       />
     );
     expect(screen.getByText('8')).toBeDefined();
@@ -50,12 +47,10 @@ describe('Cell', () => {
     render (
 			<Cell
 				cellIndex={2}
-				digit={0}
+        cellData={{digit: 0, state: 'free', notes: [1,2,3,4,5,6,7,8,9]}}
 				highlight=''
 				selectCell={() => {}}
-        notes={[1,2,3,4,5,6,7,8,9]}
-        errorCell={undefined}
-        gameComplete={false}
+        solvedBoard={false}
       />
     );
     for(let i = 1; i < 10; i++){
@@ -67,12 +62,10 @@ describe('Cell', () => {
     render (
 			<Cell
 				cellIndex={2}
-				digit={9}
+        cellData={{digit: 9, state: 'free', notes: [1,2,3,4,5,6,7,8]}}
 				highlight=''
 				selectCell={() => {}}
-        notes={[1,2,3,4,5,6,7,8]}
-        errorCell={undefined}
-        gameComplete={false}
+        solvedBoard={false}
       />
     );
 		expect(screen.getByText(9)).toBeDefined()
