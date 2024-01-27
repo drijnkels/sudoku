@@ -42,7 +42,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
   return (
     <div className='flex-1 flex flex-col lg:flex-row'>
       <NotesContext.Provider value={{ notesActive, setNotesActive }}>
-        <div className='flex-1 flex flex-col gap-4'>
+        <div className='flex-1 flex flex-col gap-4 mb-8'>
           <div>
             <div className="mb-4">
               <div className="font-bold text-lg">{title}:  {completion}%</div>
@@ -69,6 +69,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
         </div>
 
       </NotesContext.Provider>
+
       <div className='text-sm text-center'>
         <div onClick={() => handleClearPuzzleProgress()} className='underline text-red-600 cursor-pointer'>Clear puzzle progress</div>
       </div>

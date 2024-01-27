@@ -37,7 +37,7 @@ const Cell = memo(function Cell({cellIndex, cellData, highlight, selectCell, sol
   return (
       <div
         onClick={selectCell}
-        className={`relative flex items-center justify-center w-[35px] h-[35px] text-xl md:w-[65px] md:h-[65px] md:text-4xl transition-colors 
+        className={`relative flex items-center justify-center w-[40px] h-[40px] text-xl md:w-[65px] md:h-[65px] md:text-4xl transition-colors 
           ${getCellState()}
           ${getBorderClass()}
           ${getBackgroundClass()}
