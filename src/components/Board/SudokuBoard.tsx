@@ -1,6 +1,7 @@
 import {ReactNode, useEffect, useState} from "react";
 import Cell from "@/components/Board/Cell";
 import {Board, GridLoc} from "@/types/types";
+import {memo} from "react";
 
 type SudokuBoardTypes = {
   boardData: Board,
@@ -8,7 +9,8 @@ type SudokuBoardTypes = {
   activeCell: GridLoc,
   setActiveCell: (gridLoc: GridLoc) => void
 }
-export default function SudokuBoard({boardData, solvedBoard, activeCell, setActiveCell}: SudokuBoardTypes) {
+
+const SudokuBoard = memo(function SudokuBoard({boardData, solvedBoard, activeCell, setActiveCell}: SudokuBoardTypes) {
   const squares = [[0,1,2], [3,4,5], [6,7,8]];
   const [activeSquare, setActiveSquare] = useState({rows: [9,9,9], columns: [9,9,9]});
 
@@ -49,6 +51,7 @@ export default function SudokuBoard({boardData, solvedBoard, activeCell, setActi
 
     return '';
   }
+
   return (
     <div className='border-2 border-slate-700 w-fit m-auto'>
       {
@@ -71,4 +74,6 @@ export default function SudokuBoard({boardData, solvedBoard, activeCell, setActi
       }
     </div>
   )
-}
+})
+
+export default SudokuBoard;

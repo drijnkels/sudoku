@@ -5,7 +5,7 @@ import {memo} from "react";
 export type CellType = {
   cellIndex: number,
   cellData: Cell,
-  highlight:string,
+  highlight: string,
   selectCell: () => void
   solvedBoard: boolean,
 }
