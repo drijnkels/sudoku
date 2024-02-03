@@ -50,6 +50,8 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
   useEffect(() => {
     if ( completion > 99 ) {
       setSolvedBoard(validateBoard(boardData));
+      // Make sure we store the latest completion value in the localStorage too
+      saveToLocalStorage(puzzle_id, {boardData: boardData, errors: errors, completion: 100});
     }
   }, [completion, boardData]);
 
