@@ -1,10 +1,10 @@
-import {GridLoc, DigitCount, Board} from "@/types/types";
-import Cell from "@/components/Board/Cell";
+import {GridLoc, DigitCount, Board, Cell} from "@/types/types";
 
 export const deepCopy = (object: any) => {
   return JSON.parse(JSON.stringify(object));
 }
 
+/* Convert a board string to a board Array */
 export const stringToBoard = (boardString: string): false | Board => {
     if (boardString.length != 89) {
         return false;
@@ -19,9 +19,35 @@ export const stringToBoard = (boardString: string): false | Board => {
       ));
 }
 
+// Test if a group is completely filled, 1 to 9
 const validateGroup = (group: number[]) => {
     group = group.filter((n) => n != 0);
     return group.length === new Set(group).size;
+}
+
+// Return all digits in the same block as the given row and column are in
+const getDigitsInBlock = (r: number, c: number, boardData: Board) => {
+    const first_r = Math.floor(r / 3) * 3;
+    const first_c = Math.floor(c / 3) * 3;
+    const square = [];
+
+    // Check square
+    for (let r = first_r; r < first_r + 3; r++) {
+        for (let c = first_c; c < first_c + 3; c++) {
+            square.push(boardData[r][c].digit);
+        }
+    }
+
+    return square
+}
+
+// Test a move with the actual solution
+export const testMove = (solutionBoard: Board, activeCell: GridLoc, digit: number) => {
+    if (solutionBoard[activeCell.r][activeCell.c].digit !== digit) {
+        return false;
+    }
+
+    return true;
 }
 
 // Checks the validity of the move against currently visible digits
@@ -37,23 +63,11 @@ export const validateMove = (boardData: Board, gridLoc: GridLoc) => {
         return false;
     }
 
-    const first_r = Math.floor(gridLoc.r / 3) * 3;
-    const first_c = Math.floor(gridLoc.c / 3) * 3;
-    const square = [];
-
-    // Check square
-    for (let r = first_r; r < first_r + 3; r++) {
-        for (let c = first_c; c < first_c + 3; c++) {
-            square.push(boardData[r][c].digit);
-        }
-    }
-    if (!validateGroup(square)) {
-        return false;
-    }
-
-    return true;
+    const block = getDigitsInBlock(gridLoc.r, gridLoc.c, boardData);
+    return validateGroup(block);
 }
 
+// Validate the entire board, does not test against the solution it only checks for double digits
 export const validateBoard = (boardData: Board) => {
     // Test board validity
     if (!boardData) {
@@ -79,14 +93,9 @@ export const validateBoard = (boardData: Board) => {
     // Check squares
     for (let r = 0; r < 9; r += 3) {
         for (let c = 0; c < 9; c += 3) {
-            const square = [];
-            for (let y = r; y < r + 3; y++) {
-                for (let x = c; x < c + 3; x++) {
-                    square.push(boardData[y][x].digit);
-                }
-            }
+            const block = getDigitsInBlock(r, c, boardData);
 
-            if (!validateGroup(square)) {
+            if (!validateGroup(block)) {
                 return false;
             }
         }
@@ -95,6 +104,46 @@ export const validateBoard = (boardData: Board) => {
     return true;
 }
 
+// Fill in all the notes on a board
+export const getAllNotes = (boardData: Board) => {
+    if (!boardData) {
+        console.error('Invalid board');
+        return false;
+    }
+
+    // Check squares
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            const blockedDigits = new Set(boardData[r].map((c) => c.digit));
+
+            // Handle the column
+            const column = boardData.map((row) => row[c]);
+            const digits_in_column = column.map((c) => c.digit);
+            for (let digit_in_column of digits_in_column) {
+                blockedDigits.add(digit_in_column);
+            }
+
+            // Handle the block
+            const block = getDigitsInBlock(r, c, boardData);
+            for (let digit_in_block of block) {
+                blockedDigits.add(digit_in_block);
+            }
+
+            const cell_notes = [];
+            for (let digit = 1; digit < 10; digit++) {
+                if (!blockedDigits.has(digit)) {
+                    cell_notes.push(digit)
+                }
+            }
+
+            boardData[r][c].notes = cell_notes;
+        }
+    }
+
+    return boardData;
+}
+
+// Calculate how many of each digit still need to be entered
 export const getRemainingDigits = (boardData: Board) => {
     // Test board validity
     if (!boardData) {
@@ -123,6 +172,7 @@ export const getRemainingDigits = (boardData: Board) => {
     return digits;
 }
 
+// Count the number of unfilled Cells, used in the completion function
 export const countEmptyCells = (board: Board | false) => {
   if (!board) {
     return 9*9;
@@ -139,8 +189,33 @@ export const countEmptyCells = (board: Board | false) => {
   return empty_cells;
 }
 
+// How much of the puzzle has been solved
 export const calculateCompletion = (intialEmptyCells: number,boardData: Board) => {
     let current_empty_cells = countEmptyCells(boardData);
 
     return 100 - Math.floor((current_empty_cells * 100) / intialEmptyCells);
+}
+
+// When a digit is placed in a Cell remove all notes of the given digit from Cells 0n:
+// the same row, same column and in the same square
+export const removeNotesAfterDigit = (currentBoardData: Cell[][], activeCell: GridLoc, digit: number) => {
+    // remove digit out of row
+    for (let c = 0; c < currentBoardData[activeCell.r].length; c++) {
+        currentBoardData[activeCell.r][c].notes = currentBoardData[activeCell.r][c].notes.filter((n) => n != digit);
+    }
+    // Remove digit out of column
+    for (let r = 0; r < currentBoardData.length; r++) {
+        currentBoardData[r][activeCell.c].notes = currentBoardData[r][activeCell.c].notes.filter((n) => n != digit);
+    }
+
+    // Remove notes out of the square
+    const first_r = Math.floor(activeCell.r / 3) * 3;
+    const first_c = Math.floor(activeCell.c / 3) * 3;
+    for (let r = first_r; r < first_r + 3; r++) {
+        for (let c = first_c; c < first_c + 3; c++) {
+            currentBoardData[r][c].notes = currentBoardData[r][c].notes.filter((n) => n != digit);
+        }
+    }
+
+    return currentBoardData;
 }

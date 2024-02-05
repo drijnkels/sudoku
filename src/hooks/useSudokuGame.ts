@@ -1,7 +1,16 @@
 import {useState, useCallback, useEffect, useMemo} from 'react';
 import {Board, Cell, GridLoc } from "@/types/types";
-import {calculateCompletion, countEmptyCells, deepCopy, validateBoard,} from "@/scripts/utils";
+import {
+  calculateCompletion,
+  countEmptyCells,
+  deepCopy,
+  getAllNotes,
+  validateBoard,
+  removeNotesAfterDigit,
+  testMove
+} from "@/scripts/utils";
 import {saveToLocalStorage, loadFromLocalStorage} from "@/scripts/persistence";
+import {mediumSolver} from "@/scripts/solver";
 
 // Initialize component with empty board so the UI does not flash
 const emptyBoard: Cell[][] = [];
@@ -73,30 +82,6 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     saveToLocalStorage(puzzle_id, {boardData: boardData, errors: errors, completion: completion});
   }
 
-  // When a digit is placed in a Cell remove all notes of the given digit from Cells 0n:
-  // the same row, same column and in the same square
-  const removeNotesAfterDigit = useCallback((currentBoardData: Cell[][], digit: number) => {
-    // remove digit out of row
-    for (let c = 0; c < currentBoardData[activeCell.r].length; c++) {
-      currentBoardData[activeCell.r][c].notes = currentBoardData[activeCell.r][c].notes.filter((n) => n != digit);
-    }
-    // Remove digit out of column
-    for (let r = 0; r < currentBoardData.length; r++) {
-      currentBoardData[r][activeCell.c].notes = currentBoardData[r][activeCell.c].notes.filter((n) => n != digit);
-    }
-
-    // Remove notes out of the square
-    const first_r = Math.floor(activeCell.r / 3) * 3;
-    const first_c = Math.floor(activeCell.c / 3) * 3;
-    for (let r = first_r; r < first_r + 3; r++) {
-      for (let c = first_c; c < first_c + 3; c++) {
-        currentBoardData[r][c].notes = currentBoardData[r][c].notes.filter((n) => n != digit);
-      }
-    }
-
-    return currentBoardData;
-  }, [activeCell])
-
   // Update a Cell state to a new digit & state,
   // validate the new digit with the solution
   const setDigit = (digit: number) => {
@@ -107,15 +92,15 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     currentCellData.digit = (currentCellData.digit === digit) ? 0 : digit;
     currentCellData.state = 'free';
 
-    if ( solutionBoard ){
-      if (solutionBoard[activeCell.r][activeCell.c].digit !== digit && currentCellData.digit !== 0) {
+    if ( solutionBoard && currentCellData.digit !== 0){
+      if ( testMove(solutionBoard, activeCell, digit) ) {
         currentCellData.state = 'error';
         setErrors(errors + 1)
       }
     }
 
     // Update Cell data
-    currentBoardData = removeNotesAfterDigit(currentBoardData, digit);
+    currentBoardData = removeNotesAfterDigit(currentBoardData, activeCell, digit);
     currentBoardData[activeCell.r][activeCell.c] = currentCellData;
 
     // Update the board
@@ -200,6 +185,30 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     updateBoardData(lastBoardState);
   }, [activeCell, gameHistory, solvedBoard])
 
+  const handleGetAllNotes = () => {
+    const boardWithNotes = getAllNotes(boardData);
+    if (!boardWithNotes) {
+      console.error('Error creating notes')
+      return;
+    }
+    console.log(boardWithNotes);
+    updateBoardData(boardWithNotes);
+  }
+
+  const handleSolveBoard = () => {
+    if (!solutionBoard) {
+      console.error('Not a valid solutionBoard to test against')
+      return;
+    }
+
+    const completedBoard = mediumSolver(boardData, solutionBoard);
+    if (!completedBoard) {
+      console.error('Error while solving the board');
+      return;
+    }
+    updateBoardData(completedBoard);
+  }
+
   return {
     boardData, setBoardData,
     activeCell,
@@ -210,6 +219,8 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     handleSetActiveCell,
     handleClickControlDigit,
     handleErase,
-    handleUndoLastMove
+    handleUndoLastMove,
+    handleGetAllNotes,
+    handleSolveBoard
   }
 }

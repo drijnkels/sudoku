@@ -7,8 +7,10 @@ type ControlsType = {
   setDigit: (digit:number) => void
   undoLastMove: () => void
   emptyCell: () => void
+  solveBoard: () => void
+  getAllNotes: () => void
 }
-export default function Controls({setDigit, undoLastMove, emptyCell}: ControlsType){
+export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard, getAllNotes}: ControlsType){
   const { notesActive, setNotesActive} = useContext(NotesContext);
   const digits = [1,2,3,4,5,6,7,8,9];
   const iconBtnClasses:string = ' w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-zinc-400';
@@ -43,6 +45,21 @@ export default function Controls({setDigit, undoLastMove, emptyCell}: ControlsTy
           {digits.map((d, digitIndex) =>
             <Button key={digitIndex} customBg={notesActive ? 'bg-emerald-400' : 'bg-sky-100'} onClick={() => setDigit(d)}>{d}</Button>
           )}
+        </div>
+
+        <div className='flex flex-col gap-2'>
+          <div
+            onClick={getAllNotes}
+            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'
+          >
+            Fill in notes
+          </div>
+          <div
+            onClick={solveBoard}
+            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'
+          >
+            Solve the board
+          </div>
         </div>
       </div>
     </div>

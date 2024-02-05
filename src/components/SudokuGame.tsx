@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from "react";
+import React from "react";
 import { deepCopy, stringToBoard } from "@/scripts/utils";
 import { Board, Puzzle, Solution } from "@/types/types";
 import { useSudokuGame } from '@/hooks/useSudokuGame';
@@ -29,7 +29,9 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
     handleSetActiveCell,
     handleClickControlDigit,
     handleErase,
-    handleUndoLastMove
+    handleUndoLastMove,
+    handleGetAllNotes,
+    handleSolveBoard
   } = useSudokuGame(
     puzzle.puzzle_id, initialBoardData, solutionBoard
   )
@@ -40,7 +42,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
   }
 
   return (
-    <div className='flex-1 flex flex-col lg:flex-row'>
+    <div className='flex-1 flex flex-col'>
       <NotesContext.Provider value={{ notesActive, setNotesActive }}>
         <div className='flex-1 flex flex-col md:flex-row gap-4 mb-8'>
           <div>
@@ -65,6 +67,8 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
             setDigit={(digit) => handleClickControlDigit(digit)}
             emptyCell={() => handleErase()}
             undoLastMove={() => handleUndoLastMove()}
+            solveBoard={() => handleSolveBoard()}
+            getAllNotes={() => handleGetAllNotes()}
           />
         </div>
 
