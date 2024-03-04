@@ -42,8 +42,12 @@ const getDigitsInBlock = (r: number, c: number, boardData: Board) => {
 }
 
 // Test a move with the actual solution
-export const testMove = (solutionBoard: Board, activeCell: GridLoc, digit: number) => {
-    if (solutionBoard[activeCell.r][activeCell.c].digit !== digit) {
+export const testMove = (solutionBoard: Board, cellToTest: GridLoc, digit: number) => {
+    // Only return error if an incorrect digit was given, ignore 0
+    if (
+      solutionBoard[cellToTest.r][cellToTest.c].digit !== digit &&
+      solutionBoard[cellToTest.r][cellToTest.c].digit != 0
+    ) {
         return false;
     }
 

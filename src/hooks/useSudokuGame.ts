@@ -29,6 +29,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
   const [boardData, setBoardData] = useState<Board>(emptyBoard);
   const [gameHistory, setGameHistory] = useState<Board[]>([]);
   const [activeCell, setActiveCell] = useState<GridLoc>({r: 9, c: 9});
+  const [cellToValidate, setCellToValidate] = useState<GridLoc>();
   const [solvedBoard, setSolvedBoard] = useState(false);
   const [notesActive, setNotesActive] = useState(false);
   const [errors, setErrors] = useState(0);
@@ -92,11 +93,20 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     currentCellData.digit = (currentCellData.digit === digit) ? 0 : digit;
     currentCellData.state = 'free';
 
-    if ( solutionBoard && currentCellData.digit !== 0){
-      if ( testMove(solutionBoard, activeCell, digit) ) {
-        currentCellData.state = 'error';
-        setErrors(errors + 1)
+    // Test the last cell that was changed, this gives users a change to correct a mistake or typo
+    if (!cellToValidate && solutionBoard || cellToValidate?.r != activeCell.r || cellToValidate.c != activeCell.c) {
+
+      // Only attempt to validate if solutionBoard was found, change the cell state on an error found
+      if (cellToValidate && solutionBoard) {
+        if ( !testMove(solutionBoard, cellToValidate, currentBoardData[cellToValidate.r][cellToValidate.c].digit) ) {
+          currentBoardData[cellToValidate.r][cellToValidate.c].state = 'error';
+          setErrors(errors + 1);
+
+        }
       }
+
+      // Update which cell needs to be validated on the next move
+      setCellToValidate(activeCell);
     }
 
     // Update Cell data
