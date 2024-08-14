@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import getConfig from 'next/config';
+import {Suspense} from "react";
+import {Loading} from "@/components/Loading";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -23,9 +25,11 @@ export default function RootLayout({
         <header className='bg-blue-600 text-2xl font-bold text-white p-4 text-center'>
           Wingu Sudoku
         </header>
-        <main className="flex-1 flex flex-col items-center w-full">
+        <main className="flex-1 flex flex-col items-center w-full max-w-screen-lg">
           <div className='flex-1'>
-          {children}
+            <Suspense fallback={<Loading />}>
+              {children}
+            </Suspense>
           </div>
           <div className='mb-4 text-sm'>
             Version: {publicRuntimeConfig?.version}
