@@ -17,9 +17,9 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
   return(
     <div>
       <div className="font-bold text-lg mb-4 hidden lg:block">Controls</div>
-      <div className='flex justify-center lg:flex-col gap-4'>
+      <div className='flex justify-center flex-col gap-4'>
         {/* Special controls to change board settings */}
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-2'>
+        <div className='grid grid-cols-3 md:grid-cols-9 gap-2'>
           <Button onClick={() => setNotesActive(!notesActive)} customBg={notesActive ? 'bg-green-400' : 'bg-sky-100'} ariaToggle={true} ariaLabel='Toggle making notes'>
             <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
               <PencilIcon className={`${iconBtnClasses} ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`} />
@@ -41,13 +41,13 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
         </div>
 
         {/* Change the value of a cell to a new digit */}
-        <div className='grid grid-cols-3 gap-2 md:gap-4 text-xl lg:text-2xl'>
+        <div className='grid grid-cols-9 lg:grid-cols-3 gap-2 md:gap-4 text-xl lg:text-2xl'>
           {digits.map((d, digitIndex) =>
             <Button key={digitIndex} customBg={notesActive ? 'bg-emerald-400' : 'bg-sky-100'} onClick={() => setDigit(d)}>{d}</Button>
           )}
         </div>
 
-        <div className='flex flex-col gap-2'>
+        <div className='grid grid-cols-2 gap-2'>
           <div
             onClick={getAllNotes}
             className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'
