@@ -18,13 +18,13 @@ export type Solution = {
 }
 
 type CellState = 'free' | 'locked' | 'error';
-export type Cell = {digit: number, state: CellState, notes: number[], r?: number, c?: number }
-export type Board = Cell[][];
+export type CellProps = {digit: number, state: CellState, notes: number[], r?: number, c?: number }
+export type Board = CellProps[][];
 
 export type History = {
   gridLoc: GridLoc,
-  currentState: Cell,
-  newState: Cell
+  currentState: CellProps,
+  newState: CellProps
 }
 
 export type DigitCount = {

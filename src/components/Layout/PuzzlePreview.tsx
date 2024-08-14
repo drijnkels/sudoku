@@ -1,4 +1,4 @@
-import {Cell, Puzzle} from "@/types/types";
+import {CellProps, Puzzle} from "@/types/types";
 import {stringToBoard} from "@/scripts/utils";
 import { loadFromLocalStorage } from "@/scripts/persistence";
 
@@ -16,7 +16,7 @@ export default function PuzzlePreview({puzzle}: {puzzle: Puzzle}){
     return cellIndex % 3 === 2 && cellIndex !== 8 ? 'border-r border-slate-800' : 'border-r border-slate-300';
   }
 
-  const getCellState = (cellData: Cell) => {
+  const getCellState = (cellData: CellProps) => {
     if (cellData.state === 'locked') {
       return 'text-slate-600 font-bold';
     }

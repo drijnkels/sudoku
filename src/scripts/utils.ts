@@ -1,4 +1,4 @@
-import {GridLoc, DigitCount, Board, Cell} from "@/types/types";
+import {GridLoc, DigitCount, Board, CellProps} from "@/types/types";
 
 export const deepCopy = (object: any) => {
   return JSON.parse(JSON.stringify(object));
@@ -202,7 +202,7 @@ export const calculateCompletion = (intialEmptyCells: number,boardData: Board) =
 
 // When a digit is placed in a Cell remove all notes of the given digit from Cells 0n:
 // the same row, same column and in the same square
-export const removeNotesAfterDigit = (currentBoardData: Cell[][], activeCell: GridLoc, digit: number) => {
+export const removeNotesAfterDigit = (currentBoardData: CellProps[][], activeCell: GridLoc, digit: number) => {
     // remove digit out of row
     for (let c = 0; c < currentBoardData[activeCell.r].length; c++) {
         currentBoardData[activeCell.r][c].notes = currentBoardData[activeCell.r][c].notes.filter((n) => n != digit);

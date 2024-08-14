@@ -1,5 +1,5 @@
 import {useState, useCallback, useEffect, useMemo} from 'react';
-import {Board, Cell, GridLoc } from "@/types/types";
+import {Board, CellProps, GridLoc } from "@/types/types";
 import {
   calculateCompletion,
   countEmptyCells,
@@ -13,7 +13,7 @@ import {saveToLocalStorage, loadFromLocalStorage} from "@/scripts/persistence";
 import {mediumSolver} from "@/scripts/solver";
 
 // Initialize component with empty board so the UI does not flash
-const emptyBoard: Cell[][] = [];
+const emptyBoard: CellProps[][] = [];
 for (let r = 0; r < 9; r++) {
   emptyBoard.push([]);
   for(let c = 0; c < 9; c++) {

@@ -1,10 +1,10 @@
 import Notes from "@/components/Board/Notes";
-import { Cell } from "@/types/types";
+import { CellProps } from "@/types/types";
 import {memo} from "react";
 
 export type CellType = {
   cellIndex: number,
-  cellData: Cell,
+  cellData: CellProps,
   highlight: string,
   selectCell: () => void
   solvedBoard: boolean,
