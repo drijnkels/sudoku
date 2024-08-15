@@ -19,7 +19,7 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
       <div className="font-bold text-lg mb-4 hidden lg:block">Controls</div>
       <div className='flex justify-center flex-col gap-4'>
         {/* Special controls to change board settings */}
-        <div className='grid grid-cols-3 md:grid-cols-9 gap-2'>
+        <div className='grid grid-cols-9 lg:grid-cols-3 gap-2'>
           <Button onClick={() => setNotesActive(!notesActive)} customBg={notesActive ? 'bg-green-400' : 'bg-sky-100'} ariaToggle={true} ariaLabel='Toggle making notes'>
             <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
               <PencilIcon className={`${iconBtnClasses} ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`} />
