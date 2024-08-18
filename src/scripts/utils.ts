@@ -112,7 +112,7 @@ export const validateBoard = (boardData: Board) => {
 export const getAllNotes = (boardData: Board) => {
     if (!boardData) {
         console.error('Invalid board');
-        return false;
+        return {'error': 'Invalid board'};
     }
 
     // Check squares

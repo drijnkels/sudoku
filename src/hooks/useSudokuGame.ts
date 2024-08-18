@@ -13,7 +13,7 @@ import {saveToLocalStorage, loadFromLocalStorage} from "@/scripts/persistence";
 import {mediumSolver} from "@/scripts/solver";
 
 // Initialize component with empty board so the UI does not flash
-const emptyBoard: CellProps[][] = [];
+const emptyBoard: Board = [];
 for (let r = 0; r < 9; r++) {
   emptyBoard.push([]);
   for(let c = 0; c < 9; c++) {
@@ -197,11 +197,10 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
 
   const handleGetAllNotes = () => {
     const boardWithNotes = getAllNotes(boardData);
-    if (!boardWithNotes) {
+    if ('error' in boardWithNotes) {
       console.error('Error creating notes')
       return;
     }
-    console.log(boardWithNotes);
     updateBoardData(boardWithNotes);
   }
 
@@ -212,7 +211,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     }
 
     const completedBoard = mediumSolver(boardData, solutionBoard);
-    if (!completedBoard) {
+    if ('error' in completedBoard) {
       console.error('Error while solving the board');
       return;
     }
