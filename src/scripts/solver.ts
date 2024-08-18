@@ -433,6 +433,24 @@ const findNakedTriples = (board) => {
   return {made_changes}
 }
 
+const findPointingPairs = (board) => {
+  let made_changes = false;
+
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const cellsInBlock = getCellsInBlock(r, c, board);
+
+      for(let cellInBlock of cellsInBlock) {
+        if ( cellInBlock.digit !== 0 ) {
+          continue
+        }
+
+
+      }
+    }
+  }
+}
+
 const arraysEqual = (a: number[], b: number[]): boolean => {
   return a.length === b.length && a.every((value, index) => value === b[index]);
 }
