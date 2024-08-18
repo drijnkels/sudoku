@@ -25,7 +25,7 @@ export default function RootLayout({
         <header className='bg-blue-600 text-2xl font-bold text-white p-4 text-center'>
           Wingu Sudoku
         </header>
-        <main className="flex-1 flex flex-col items-center w-full max-w-screen-lg">
+        <main className="flex-1 flex flex-col items-center w-full max-w-screen-lg mx-auto">
           <div className='flex-1'>
             <Suspense fallback={<Loading />}>
               {children}
