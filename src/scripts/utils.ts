@@ -9,12 +9,16 @@ export const stringToBoard = (boardString: string): {error: string} | Board => {
     if (boardString.replaceAll(' ', '').length !== 81) {
         return {'error': 'Not a valid board'};
     }
+    // @ts-ignore
     return boardString
       .split(' ')
-      // @ts-ignore
       .map((row) => [...row].map(
         (digit) => (
-          { digit: parseInt(digit), state: (digit == 0 ? 'free' : 'locked'), notes: []}
+          {
+              digit: parseInt(digit),
+              state: (digit == 0 ? 'free' : 'locked'),
+              notes: new Set()
+          }
         )
       ));
 }
