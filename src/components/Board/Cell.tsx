@@ -43,7 +43,7 @@ const Cell = memo(function Cell({cellIndex, cellData, highlight, selectCell, sol
           ${getBackgroundClass()}
       `}>
           {cellData.digit !== 0 ? cellData.digit : ''}
-        <Notes notes={cellData.digit === 0 ? cellData.notes : []} />
+        <Notes notes={cellData.digit === 0 ? [...cellData.notes] : []} />
       </div>
   )
 })

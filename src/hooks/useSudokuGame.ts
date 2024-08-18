@@ -20,12 +20,12 @@ for (let r = 0; r < 9; r++) {
     emptyBoard[r].push({
       digit: 0,
       state: 'locked',
-      notes: []
+      notes: new Set()
     })
   }
 }
 
-export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false, solutionBoard: Board | false) => {
+export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {error: string}, solutionBoard: Board | {error: string}) => {
   const [boardData, setBoardData] = useState<Board>(emptyBoard);
   const [gameHistory, setGameHistory] = useState<Board[]>([]);
   const [activeCell, setActiveCell] = useState<GridLoc>({r: 9, c: 9});
@@ -35,7 +35,11 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
   const [errors, setErrors] = useState(0);
   const [completion, setCompletion] = useState(0);
 
-  const emptyCells = useMemo(() => countEmptyCells(initialBoardData), [initialBoardData]);
+  // To calculate the progress, find the number of empty cells in the original puzzle
+  const emptyCells = useMemo(() =>
+    !('error' in initialBoardData) ? countEmptyCells(initialBoardData) : 0,
+    [initialBoardData]
+  );
 
   // Use useEffect to initialize boardData with a deep copy of initialBoardData or localStorage if available
   useEffect(() => {
@@ -98,7 +102,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
 
       // Only attempt to validate if solutionBoard was found, change the cell state on an error found
       if (cellToValidate && solutionBoard) {
-        if ( !testMove(solutionBoard, cellToValidate, currentBoardData[cellToValidate.r][cellToValidate.c].digit) ) {
+        if ( !testMove(solutionBoard as Board, cellToValidate, currentBoardData[cellToValidate.r][cellToValidate.c].digit) ) {
           currentBoardData[cellToValidate.r][cellToValidate.c].state = 'error';
           setErrors(errors + 1);
 
@@ -124,10 +128,10 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     const currentCellData = currentBoardData[activeCell.r][activeCell.c];
 
     // Add or remove the new note to the cell notes
-    if (currentCellData.notes.indexOf(digit) === -1) {
-      currentCellData.notes = [...currentCellData.notes, digit];
+    if (currentCellData.notes.has(digit)) {
+      currentCellData.notes.delete(digit)
     } else {
-      currentCellData.notes = currentCellData.notes.filter((n) => n != digit);
+      currentCellData.notes.add(digit)
     }
 
     // Update Cell data
@@ -172,7 +176,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
     addMoveToHistory(deepCopy(boardData));
 
     currentCellData.digit = 0;
-    currentCellData.notes = [];
+    currentCellData.notes.clear();
     currentCellData.state = 'free';
     currentBoardData[activeCell.r][activeCell.c] = currentCellData;
 
@@ -210,11 +214,23 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | false
       return;
     }
 
-    const completedBoard = mediumSolver(boardData, solutionBoard);
+    const completedBoard = mediumSolver(boardData, solutionBoard as Board);
     if ('error' in completedBoard) {
       console.error('Error while solving the board');
       return;
     }
+
+    // Create the board sequence in case we need it for the solutions
+    let board_sequence = '';
+    for (let r = 0; r < completedBoard.length; r++) {
+      for (let c = 0; c < completedBoard[r].length; c++) {
+        board_sequence += completedBoard[r][c].digit;
+        if ((r * completedBoard[r].length + c + 1) % 9 === 0) {
+          board_sequence += ' ';
+        }
+      }
+    }
+    // console.log(board_sequence)
     updateBoardData(completedBoard);
   }
 

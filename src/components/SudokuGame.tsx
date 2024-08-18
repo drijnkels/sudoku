@@ -16,7 +16,7 @@ type SudokuGame = {
 }
 
 export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
-  const initialBoardData: false | Board = stringToBoard(puzzle.board);
+  const initialBoardData = stringToBoard(puzzle.board);
   const solutionBoard = stringToBoard(solution.board);
 
   const {
@@ -39,6 +39,14 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
   const handleClearPuzzleProgress = () => {
     clearPuzzleProgress(puzzle.puzzle_id);
     setBoardData(deepCopy(initialBoardData));
+  }
+
+  if ('error' in initialBoardData || 'error' in solutionBoard) {
+    return (
+      <div>
+        An error occurred while trying to load the puzzle
+      </div>
+    )
   }
 
   return (

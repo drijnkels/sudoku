@@ -100,8 +100,8 @@ const fillSolvedCells = (board: Board, solution: Board) => {
 
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
-      if (board[r][c].digit === 0 && board[r][c].notes.length == 1) {
-        const newDigit = board[r][c].notes[0];
+      if (board[r][c].digit === 0 && [...board[r][c].notes].length == 1) {
+        const newDigit = [...board[r][c].notes][0];
 
         moves.push(`Set row: ${r}, col: ${c} to ${newDigit} - solve`)
 
@@ -112,7 +112,7 @@ const fillSolvedCells = (board: Board, solution: Board) => {
 
         // Update the cell with the new digit
         board[r][c].digit = newDigit;
-        board[r][c].notes = [];
+        board[r][c].notes.clear();
 
         // Update notes in the row, column and block to remove the digit
         board = removeNotesAfterDigit(board, {r: r, c: c}, newDigit);
@@ -121,8 +121,6 @@ const fillSolvedCells = (board: Board, solution: Board) => {
       }
     }
   }
-
-  console.log('solved moves', moves)
 
   return {made_changes, moves}
 }
@@ -164,7 +162,7 @@ const findHiddenSingles = (board, solution) => {
           }
 
           // Found the digit in another cell's note than it cannot be unique
-          if (board[r][nc].notes.indexOf(cellNote) > -1) {
+          if (board[r][nc].notes.has(cellNote)) {
             checkedRowDigits.add(cellNote);
             nc = 9;
             unique_digit = false;
@@ -182,7 +180,7 @@ const findHiddenSingles = (board, solution) => {
           moves.push(`Set Row: ${r}, Col: ${c} to ${cellNote} - hidden single in row`)
 
           board[r][c].digit = cellNote;
-          board[r][c].notes = [];
+          board[r][c].notes.clear();
           board = removeNotesAfterDigit(board, {r: r, c: c}, cellNote);
           made_changes = true;
           break;
@@ -199,7 +197,7 @@ const findHiddenSingles = (board, solution) => {
           }
 
           // Found the digit in another cell's note than it cannot be unique
-          if (board[nr][c].notes.indexOf(cellNote) > -1) {
+          if (board[nr][c].notes.has(cellNote)) {
             nr = 12;
             unique_digit = false;
             break;
@@ -216,7 +214,7 @@ const findHiddenSingles = (board, solution) => {
           moves.push(`Set Row: ${r}, Col: ${c} to ${cellNote} - hidden single in col`)
 
           board[r][c].digit = cellNote;
-          board[r][c].notes = [];
+          board[r][c].notes.clear();
           board = removeNotesAfterDigit(board, {r: r, c: c}, cellNote);
           made_changes = true;
           break;
@@ -233,7 +231,7 @@ const findHiddenSingles = (board, solution) => {
           }
 
           // Found the digit in another cell's note than it cannot be unique
-          if (cellInBlock.notes.indexOf(cellNote) > -1) {
+          if (cellInBlock.notes.has(cellNote)) {
             unique_digit = false;
             break;
           }
@@ -249,7 +247,7 @@ const findHiddenSingles = (board, solution) => {
           moves.push(`Set Row: ${r}, Col: ${c} to ${cellNote} - hidden single in block`)
 
           board[r][c].digit = cellNote;
-          board[r][c].notes = [];
+          board[r][c].notes.clear();
           board = removeNotesAfterDigit(board, {r: r, c: c}, cellNote);
           made_changes = true;
           break;
@@ -271,12 +269,12 @@ const findNakedPairs = (board) => {
 
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
-      if (board[r][c].digit === 0 && board[r][c].notes.length === 2) {
-        const pair = board[r][c].notes;
+      if (board[r][c].digit === 0 && [...board[r][c].notes].length === 2) {
+        const pair = [...board[r][c].notes];
 
         // Check row for another identical pair
         for (let cc = 0; cc < 9; cc++) {
-          if (cc !== c && board[r][cc].digit === 0 && arraysEqual(board[r][cc].notes, pair)) {
+          if (cc !== c && board[r][cc].digit === 0 && arraysEqual([...board[r][cc].notes], pair)) {
             removeNotesFromOthersInRow(board, r, pair, [c, cc]);
             made_changes = true;
             break;
@@ -285,7 +283,7 @@ const findNakedPairs = (board) => {
 
         // Check column for another identical pair
         for (let rr = 0; rr < 9; rr++) {
-          if (rr !== r && board[rr][c].digit === 0 && arraysEqual(board[rr][c].notes, pair)) {
+          if (rr !== r && board[rr][c].digit === 0 && arraysEqual([...board[rr][c].notes], pair)) {
             removeNotesFromOthersInColumn(board, c, pair, [r, rr]);
             made_changes = true;
             break;
@@ -295,7 +293,7 @@ const findNakedPairs = (board) => {
         // Check block for another identical pair
         const cellsInBlock = getCellsInBlock(r, c, board);
         for (let cellInBlock of cellsInBlock) {
-          if ((cellInBlock.r !== r || cellInBlock.c !== c) && cellInBlock.digit === 0 && arraysEqual(cellInBlock.notes, pair)) {
+          if ((cellInBlock.r !== r || cellInBlock.c !== c) && cellInBlock.digit === 0 && arraysEqual([...cellInBlock.notes], pair)) {
             removeNotesFromOthersInBlock(board, r, c, pair, [cellInBlock.r, cellInBlock.c]);
             made_changes = true;
             break;
@@ -320,8 +318,8 @@ const findNakedTriples = (board) => {
 
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
-      if (board[r][c].digit === 0 && board[r][c].notes.length <= 3) {
-        const triple = board[r][c].notes
+      if (board[r][c].digit === 0 && [...board[r][c].notes].length <= 3) {
+        const triple = [...board[r][c].notes]
 
         // # Row
         // Check row for another two identical or subset triples
@@ -329,7 +327,7 @@ const findNakedTriples = (board) => {
         let foundRowSet;
         for (let cc = 0; cc < 9; cc++) {
           // Ignore current cell, completed cell or cell with 4 or more notes
-          if (cc == c || board[r][cc].digit !== 0 || board[r][cc].notes.length > 3) {
+          if (cc == c || board[r][cc].digit !== 0 || [...board[r][cc].notes].length > 3) {
             continue
           }
 
@@ -340,7 +338,7 @@ const findNakedTriples = (board) => {
               rowTripleMatches.push(cc)
             }
           } else {
-            const cellSet = new Set(board[r][cc].notes);
+            const cellSet = new Set([...board[r][cc].notes]);
             if (foundRowSet.isSupersetOf(cellSet)) {
               rowTripleMatches.push(cc)
               break;
@@ -360,7 +358,7 @@ const findNakedTriples = (board) => {
         let foundColSet;
         for (let rr = 0; rr < 9; rr++) {
           // Ignore cells with too many notes, these could be hidden triples though
-          if (rr == r || board[rr][c].digit !== 0 || board[rr][c].notes.length > 3) {
+          if (rr == r || board[rr][c].digit !== 0 || [...board[rr][c].notes].length > 3) {
             continue
           }
 
@@ -375,7 +373,7 @@ const findNakedTriples = (board) => {
           } else {
             // Convert cell notes into a Set to be able to use the isSupersetOf function
             // If current cell notes are equal too or in the existing set -> found a triple
-            const cellSet = new Set(board[rr][c].notes);
+            const cellSet = new Set([...board[rr][c].notes]);
             if (foundColSet.isSupersetOf(cellSet)) {
               columnTripleMatches.push(rr)
               // Limit code to finding a single triple per column
@@ -458,7 +456,7 @@ const arraysEqual = (a: number[], b: number[]): boolean => {
 const removeNotesFromOthersInRow = (board: Board, row: number, pair: number[], excludeCols: number[]) => {
   for (let c = 0; c < 9; c++) {
     if (!excludeCols.includes(c) && board[row][c].digit === 0) {
-      board[row][c].notes = board[row][c].notes.filter(note => !pair.includes(note));
+      pair.forEach(digit => board[row][c].notes.delete(digit))
     }
   }
 }
@@ -466,7 +464,7 @@ const removeNotesFromOthersInRow = (board: Board, row: number, pair: number[], e
 const removeNotesFromOthersInColumn = (board: Board, col: number, pair: number[], excludeRows: number[]) => {
   for (let r = 0; r < 9; r++) {
     if (!excludeRows.includes(r) && board[r][col].digit === 0) {
-      board[r][col].notes = board[r][col].notes.filter(note => !pair.includes(note));
+      pair.forEach(digit => board[r][col].notes.delete(digit))
     }
   }
 }
@@ -475,7 +473,7 @@ const removeNotesFromOthersInBlock = (board: Board, row: number, col: number, pa
   const cellsInBlock = getCellsInBlock(row, col, board);
   for (let cell of cellsInBlock) {
     if (!excludeCells.includes(cell.r) && !excludeCells.includes(cell.c) && cell.digit === 0) {
-      cell.notes = cell.notes.filter(note => !pair.includes(note));
+      pair.forEach(digit => cell.notes.delete(digit))
     }
   }
 }

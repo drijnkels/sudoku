@@ -1,7 +1,7 @@
 import {GridLoc, DigitCount, Board, CellProps} from "@/types/types";
 
 export const deepCopy = (object: any) => {
-  return JSON.parse(JSON.stringify(object));
+  return structuredClone(object);
 }
 
 /* Convert a board string to a board Array */
@@ -118,6 +118,7 @@ export const getAllNotes = (boardData: Board) => {
     // Check squares
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
+            // Create a set from the row
             const blockedDigits = new Set(boardData[r].map((c) => c.digit));
 
             // Handle the column
@@ -136,11 +137,9 @@ export const getAllNotes = (boardData: Board) => {
             const cell_notes = [];
             for (let digit = 1; digit < 10; digit++) {
                 if (!blockedDigits.has(digit)) {
-                    cell_notes.push(digit)
+                    boardData[r][c].notes.add(digit)
                 }
             }
-
-            boardData[r][c].notes = cell_notes;
         }
     }
 
@@ -205,11 +204,11 @@ export const calculateCompletion = (intialEmptyCells: number,boardData: Board) =
 export const removeNotesAfterDigit = (currentBoardData: CellProps[][], activeCell: GridLoc, digit: number) => {
     // remove digit out of row
     for (let c = 0; c < currentBoardData[activeCell.r].length; c++) {
-        currentBoardData[activeCell.r][c].notes = currentBoardData[activeCell.r][c].notes.filter((n) => n != digit);
+        currentBoardData[activeCell.r][c].notes.delete(digit)
     }
     // Remove digit out of column
     for (let r = 0; r < currentBoardData.length; r++) {
-        currentBoardData[r][activeCell.c].notes = currentBoardData[r][activeCell.c].notes.filter((n) => n != digit);
+        currentBoardData[r][activeCell.c].notes.delete(digit)
     }
 
     // Remove notes out of the square
@@ -217,7 +216,7 @@ export const removeNotesAfterDigit = (currentBoardData: CellProps[][], activeCel
     const first_c = Math.floor(activeCell.c / 3) * 3;
     for (let r = first_r; r < first_r + 3; r++) {
         for (let c = first_c; c < first_c + 3; c++) {
-            currentBoardData[r][c].notes = currentBoardData[r][c].notes.filter((n) => n != digit);
+            currentBoardData[r][c].notes.delete(digit)
         }
     }
 

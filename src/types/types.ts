@@ -18,7 +18,7 @@ export type Solution = {
 }
 
 type CellState = 'free' | 'locked' | 'error';
-export type CellProps = {digit: number, state: CellState, notes: number[], r?: number, c?: number }
+export type CellProps = {digit: number, state: CellState, notes: Set<number>, r?: number, c?: number }
 export type Board = CellProps[][];
 
 export type History = {

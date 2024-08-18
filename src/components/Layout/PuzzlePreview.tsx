@@ -6,7 +6,7 @@ export default function PuzzlePreview({puzzle}: {puzzle: Puzzle}){
   const storedBoardState = loadFromLocalStorage(puzzle.puzzle_id);
   const boardData =  (storedBoardState ) ? storedBoardState.boardData : stringToBoard(puzzle.board);
   const completion = (storedBoardState) ? storedBoardState.completion : 0;
-  if(!boardData){
+  if('error' in boardData){
     return (
       <div>Not a valid board</div>
     )
