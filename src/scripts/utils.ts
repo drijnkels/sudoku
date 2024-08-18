@@ -5,9 +5,9 @@ export const deepCopy = (object: any) => {
 }
 
 /* Convert a board string to a board Array */
-export const stringToBoard = (boardString: string): false | Board => {
-    if (boardString.length != 89) {
-        return false;
+export const stringToBoard = (boardString: string): {error: string} | Board => {
+    if (boardString.replaceAll(' ', '').length !== 81) {
+        return {'error': 'Not a valid board'};
     }
     return boardString
       .split(' ')
