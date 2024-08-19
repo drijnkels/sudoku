@@ -60,7 +60,7 @@ export const mediumSolver = (boardState: Board, solutionBoard: Board) => {
     }
 
     // Detect Hidden Singles
-    let singlesResult = findHiddenSingles(boardWithNotes, solutionBoard)
+    let singlesResult = solveHiddenSingles(boardWithNotes, solutionBoard)
     if (singlesResult && singlesResult.made_changes) {
       changedBoard = singlesResult.made_changes
       moves = [...moves, ...solvedResult.moves]
@@ -130,7 +130,7 @@ const fillSolvedCells = (board: Board, solution: Board) => {
  * @param board
  * @param solution
  */
-const findHiddenSingles = (board, solution) => {
+export const solveHiddenSingles = (board, solution) => {
   let made_changes = false;
   const moves = [];
 
