@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en" className='h-full'>
       <body className={`${inter.className} w-full h-full flex flex-col`}>
         <header className='bg-blue-600 text-2xl font-bold text-white p-4 text-center'>
-          Wingu Sudoku
+          <a href="/">Wingu Sudoku</a>
         </header>
         <main className="flex-1 flex flex-col items-center w-full max-w-screen-lg mx-auto">
           <div className='flex-1'>
