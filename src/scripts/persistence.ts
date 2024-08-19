@@ -6,12 +6,32 @@ export const loadFromLocalStorage = (puzzle_id: string): {boardData: Board, erro
     return false;
   }
 
-  const puzzleData = localStorage.getItem(puzzle_id);
-  if (!puzzleData) {
+  const storageObj = localStorage.getItem(puzzle_id);
+  if (!storageObj) {
     return false;
   }
 
-  return JSON.parse(puzzleData);
+  const puzzleData = JSON.parse(storageObj);
+
+  const processed_puzzle = [];
+  for (let r = 0; r < 9; r++) {
+    processed_puzzle[r] = []
+    for (let c = 0; c < 9; c++) {
+      processed_puzzle[r].push(
+        {
+          digit: puzzleData.boardData[r][c].digit,
+          state: puzzleData.boardData[r][c].state,
+          notes: new Set(puzzleData.boardData[r][c].notes),
+          r: r,
+          c: c
+        }
+      )
+    }
+  }
+
+  puzzleData.boardData = processed_puzzle;
+
+  return puzzleData;
 }
 
 export const saveToLocalStorage = (puzzle_id: string, puzzleData: {boardData: Board, errors: number, completion: number}) => {
@@ -19,6 +39,25 @@ export const saveToLocalStorage = (puzzle_id: string, puzzleData: {boardData: Bo
     console.error('Unable to use localStorage')
     return false;
   }
+
+  // Translate the notes from a Set to an array for json storage
+  const processed_puzzle = [];
+  for (let r = 0; r < 9; r++) {
+    processed_puzzle[r] = []
+    for (let c = 0; c < 9; c++) {
+      processed_puzzle[r].push(
+        {
+          digit: puzzleData.boardData[r][c].digit,
+          state: puzzleData.boardData[r][c].state,
+          notes: [...puzzleData.boardData[r][c].notes],
+          r: r,
+          c: c
+        }
+      )
+    }
+  }
+
+  puzzleData.boardData = processed_puzzle;
 
   localStorage.setItem(puzzle_id, JSON.stringify(puzzleData));
   return true;
