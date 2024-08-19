@@ -16,6 +16,7 @@ type SudokuGame = {
 }
 
 export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
+  const debugMode = false;
   const initialBoardData = stringToBoard(puzzle.board);
   const solutionBoard = stringToBoard(solution.board);
 
@@ -31,7 +32,8 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
     handleErase,
     handleUndoLastMove,
     handleGetAllNotes,
-    handleSolveBoard
+    handleSolveBoard,
+    handleStrategy
   } = useSudokuGame(
     puzzle.puzzle_id, initialBoardData, solutionBoard
   )
@@ -68,6 +70,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
               activeCell={activeCell}
               setActiveCell={(gridLoc) => handleSetActiveCell(gridLoc)}
               solvedBoard={solvedBoard}
+              debugMode={debugMode}
             />
           </div>
 
@@ -77,6 +80,8 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
             undoLastMove={() => handleUndoLastMove()}
             solveBoard={() => handleSolveBoard()}
             getAllNotes={() => handleGetAllNotes()}
+            handleStrategy={handleStrategy}
+            debugMode={debugMode}
           />
         </div>
 

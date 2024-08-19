@@ -10,7 +10,7 @@ import {
   testMove, boardToString
 } from "@/scripts/utils";
 import {saveToLocalStorage, loadFromLocalStorage} from "@/scripts/persistence";
-import {mediumSolver} from "@/scripts/solver";
+import {findNakedPairs, findNakedTriples, findPointingPairs, mediumSolver, solveHiddenSingles} from "@/scripts/solver";
 
 // Initialize component with empty board so the UI does not flash
 const emptyBoard: Board = [];
@@ -225,6 +225,32 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     updateBoardData(completedBoard);
   }
 
+  const handleStrategy = (strategy) => {
+    let updatedBoard = boardData;
+    switch(strategy){
+      case 'hidden_singles':
+        const single_result = solveHiddenSingles(boardData, solutionBoard)
+        updatedBoard = single_result?.board
+        break;
+      case 'naked_pairs':
+        const pair_result = findNakedPairs(boardData)
+        updatedBoard = pair_result.board;
+        break;
+      case 'naked_triples':
+        const triple_result = findNakedTriples(boardData)
+        updatedBoard = triple_result.board;
+        break
+      case 'pointing_pairs':
+        const pointed_result = findPointingPairs(boardData)
+        updatedBoard = pointed_result.board;
+        break
+      default:
+        return
+    }
+
+    updateBoardData(updatedBoard);
+  }
+
   return {
     boardData, setBoardData,
     activeCell,
@@ -237,6 +263,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     handleErase,
     handleUndoLastMove,
     handleGetAllNotes,
-    handleSolveBoard
+    handleSolveBoard,
+    handleStrategy
   }
 }

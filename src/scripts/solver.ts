@@ -258,7 +258,7 @@ export const solveHiddenSingles = (board, solution) => {
     }
   }
 
-  return {made_changes, moves}
+  return {made_changes, moves, board}
 }
 
 /**
@@ -266,7 +266,7 @@ export const solveHiddenSingles = (board, solution) => {
  * TODO: Could this handle Blind Pairs?
  * @param board
  */
-const findNakedPairs = (board) => {
+export const findNakedPairs = (board) => {
   let made_changes = false;
 
   for (let r = 0; r < 9; r++) {
@@ -306,7 +306,7 @@ const findNakedPairs = (board) => {
     }
   }
 
-  return {made_changes}
+  return {made_changes, board}
 }
 
 /**
@@ -315,7 +315,7 @@ const findNakedPairs = (board) => {
  * TODO: Could this handle Blind Triples?
  * @param board
  */
-const findNakedTriples = (board) => {
+export const findNakedTriples = (board) => {
   let made_changes = false;
 
   for (let r = 0; r < 9; r++) {
@@ -430,10 +430,10 @@ const findNakedTriples = (board) => {
     }
   }
 
-  return {made_changes}
+  return {made_changes, board}
 }
 
-const findPointingPairs = (board) => {
+export const findPointingPairs = (board) => {
   let made_changes = false;
 
   for (let r = 0; r < 9; r += 3) {

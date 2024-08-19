@@ -8,9 +8,11 @@ type ControlsType = {
   undoLastMove: () => void
   emptyCell: () => void
   solveBoard: () => void
-  getAllNotes: () => void
+  getAllNotes: () => void,
+  handleStrategy: (strategy: string) => void
+  debugMode: boolean
 }
-export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard, getAllNotes}: ControlsType){
+export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard, getAllNotes, handleStrategy, debugMode}: ControlsType){
   const { notesActive, setNotesActive} = useContext(NotesContext);
   const digits = [1,2,3,4,5,6,7,8,9];
   const iconBtnClasses:string = ' w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-zinc-400';
@@ -61,6 +63,31 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
             Solve the board
           </div>
         </div>
+
+        {debugMode && <div className={'flex flex-col gap-2'}>
+          <b>Run strategies</b>
+          <div
+            onClick={() => handleStrategy('hidden_singles')}
+            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'>
+            Solve Hidden Singles
+          </div>
+          <div
+            onClick={() => handleStrategy('naked_pairs')}
+            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'>
+            Naked Pairs
+          </div>
+          <div
+            onClick={() => handleStrategy('naked_triples')}
+            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'>
+            Naked Triples
+          </div>
+          <div
+            onClick={() => handleStrategy('pointing_pairs')}
+            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'>
+            Pointing Pairs
+          </div>
+        </div>
+        }
       </div>
     </div>
   )
