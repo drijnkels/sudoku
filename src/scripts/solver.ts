@@ -77,6 +77,8 @@ export const mediumSolver = (boardState: Board, solutionBoard: Board) => {
       changedBoard = nakedTriplesResult.made_changes;
     }
 
+    const pointing_doubles_triples = findPointingPairs(boardWithNotes)
+
     // If no changes were made to the board, the solver got stuck
     if (!changedBoard) {
       console.warn('No move was found');
@@ -434,19 +436,67 @@ const findNakedTriples = (board) => {
 const findPointingPairs = (board) => {
   let made_changes = false;
 
-  for (let r = 0; r < 9; r++) {
-    for (let c = 0; c < 9; c++) {
-      const cellsInBlock = getCellsInBlock(r, c, board);
+  for (let r = 0; r < 9; r += 3) {
+    for (let c = 0; c < 9; c += 3) {
+      const allCellsInBlock = getCellsInBlock(r, c, board);
+
+      // Since we're looping over these so often let only keep the relevant ones
+      const cellsInBlock = allCellsInBlock.filter(cellInBlock => cellInBlock.digit === 0);
+
+      const cellsChecked = [];
 
       for(let cellInBlock of cellsInBlock) {
-        if ( cellInBlock.digit !== 0 ) {
-          continue
-        }
+        const cellId = cellInBlock.r+''+cellInBlock.c;
+        cellsChecked.push(cellId);
 
+        for (const neighbourCellInBlock of cellsInBlock) {
+          const ngbId = neighbourCellInBlock.r+''+neighbourCellInBlock.c;
+          // Only check cells in the same row or column
+          if (
+            (cellInBlock.r == neighbourCellInBlock.r && cellInBlock.c == neighbourCellInBlock.c) || // Do not check same cell
+            (cellInBlock.r != neighbourCellInBlock.r && cellInBlock.c != neighbourCellInBlock.c) || // Do not check cells not in the same row / col
+            cellsChecked.includes(ngbId)
+          ) {
+            continue;
+          }
+
+          // Get the overlapping notes of these cells
+          const overlapping_notes = cellInBlock.notes.intersection(neighbourCellInBlock.notes)
+
+          // For each overlapping note check if it appears in another column or row
+          for (const overlapNote of [...overlapping_notes]) {
+            for (const otherCellInBlock of cellsInBlock) {
+              if (otherCellInBlock.digit !== 0) {
+                continue;
+              }
+              // Only check for cells that are not in the same row or column
+              if (
+                (cellInBlock.r == neighbourCellInBlock.r && otherCellInBlock.r != neighbourCellInBlock.r) ||
+                (cellInBlock.c == neighbourCellInBlock.c && otherCellInBlock.c != neighbourCellInBlock.c)
+              ){
+                // If we find overlap than this digit is of no interest
+                if (otherCellInBlock.notes.has(overlapNote)) {
+                  overlapping_notes.delete(overlapNote)
+                  break;
+                }
+              }
+            }
+          }
+
+          if ([...overlapping_notes].length > 0) {
+            if (cellInBlock.r === neighbourCellInBlock.r) {
+              removeNotesFromOthersInRow(board, cellInBlock.r, [...overlapping_notes], [c, c+1, c+2])
+            } else if (cellInBlock.c === neighbourCellInBlock.c) {
+              removeNotesFromOthersInColumn(board, cellInBlock.c, [...overlapping_notes], [r, r+1, r+2])
+            }
+          }
+        }
 
       }
     }
   }
+
+  return {made_changes, board}
 }
 
 const arraysEqual = (a: number[], b: number[]): boolean => {
