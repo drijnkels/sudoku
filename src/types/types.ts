@@ -9,6 +9,7 @@ export type Puzzle = {
   puzzle_id: string
   url: string
   name: string
+  notes: string
   board: string
 }
 
