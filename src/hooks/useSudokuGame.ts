@@ -225,7 +225,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     updateBoardData(completedBoard);
   }
 
-  const handleStrategy = (strategy) => {
+  const handleStrategy = (strategy: string) => {
     let updatedBoard = boardData;
     switch(strategy){
       case 'hidden_singles':

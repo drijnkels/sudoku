@@ -36,9 +36,9 @@ export const mediumSolver = (boardState: Board, solutionBoard: Board) => {
   }
 
   // Loop through the solving steps a max of 10 times before giving up
-  for (let rounds = 0; rounds < 4; rounds++) {
+  for (let rounds = 0; rounds < 10; rounds++) {
     let rows_with_empty_cells = 0;
-    let moves = [];
+    // let moves: string[] = [];
 
     for (let r = 0; r < 9; r++) {
       if (boardState[r].find((c) => c.digit == 0) ) {
@@ -56,14 +56,14 @@ export const mediumSolver = (boardState: Board, solutionBoard: Board) => {
     const solvedResult = fillSolvedCells(boardWithNotes, solutionBoard);
     if (solvedResult && solvedResult.made_changes) {
       changedBoard = solvedResult.made_changes
-      moves = solvedResult.moves
+      // moves = solvedResult.moves
     }
 
     // Detect Hidden Singles
     let singlesResult = solveHiddenSingles(boardWithNotes, solutionBoard)
     if (singlesResult && singlesResult.made_changes) {
       changedBoard = singlesResult.made_changes
-      moves = [...moves, ...solvedResult.moves]
+      // moves = [...moves, ...solvedResult.moves]
     }
 
     // Find Naked Pairs and eliminate notes
@@ -108,7 +108,8 @@ const fillSolvedCells = (board: Board, solution: Board) => {
         moves.push(`Set row: ${r}, col: ${c} to ${newDigit} - solve`)
 
         if (!testMove(solution, {r: r, c: c}, newDigit)) {
-          console.error('Invalid solution', {r: r, c: c}, newDigit)
+          console.log(board[r][c])
+          console.error('Invalid solution, solved cells', {r: r, c: c}, newDigit)
           return
         }
 
@@ -175,7 +176,7 @@ export const solveHiddenSingles = (board, solution) => {
         // If we found a unique digit in the notes for a row assign that digit to the current cell and move on
         if (unique_digit) {
           if (!testMove(solution, {r: r, c: c}, cellNote)) {
-            console.error('Invalid solution')
+            console.error('Invalid solution, hidden singles - row', {r: r, c: c}, unique_digit)
             return
           }
 
@@ -209,7 +210,7 @@ export const solveHiddenSingles = (board, solution) => {
         // If we found a unique digit in the notes for a column assign that digit to the current cell and move on
         if (unique_digit) {
           if (!testMove(solution, {r: r, c: c}, cellNote)) {
-            console.error('Invalid solution')
+            console.error('Invalid solution, hidden singles - col', {r: r, c: c}, unique_digit)
             return
           }
 
@@ -242,7 +243,7 @@ export const solveHiddenSingles = (board, solution) => {
         // If we found a unique digit in the notes for a block assign that digit to the current cell and move on
         if (unique_digit) {
           if (!testMove(solution, {r: r, c: c}, cellNote)) {
-            console.error('Invalid solution')
+            console.error('Invalid solution, hidden singles - block', {r: r, c: c}, unique_digit)
             return
           }
 

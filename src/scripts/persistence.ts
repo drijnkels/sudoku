@@ -13,7 +13,7 @@ export const loadFromLocalStorage = (puzzle_id: string): {boardData: Board, erro
 
   const puzzleData = JSON.parse(storageObj);
 
-  const processed_puzzle = [];
+  const processed_puzzle: {digit: number; state: string; notes: Set<unknown>; r: number; c: number;}[][] = [];
   for (let r = 0; r < 9; r++) {
     processed_puzzle[r] = []
     for (let c = 0; c < 9; c++) {
@@ -41,7 +41,7 @@ export const saveToLocalStorage = (puzzle_id: string, puzzleData: {boardData: Bo
   }
 
   // Translate the notes from a Set to an array for json storage
-  const processed_puzzle = [];
+  const processed_puzzle: { digit: number; state: string; notes: number[]; r: number; c: number; }[][] = [];
   for (let r = 0; r < 9; r++) {
     processed_puzzle[r] = []
     for (let c = 0; c < 9; c++) {
@@ -57,9 +57,13 @@ export const saveToLocalStorage = (puzzle_id: string, puzzleData: {boardData: Bo
     }
   }
 
-  puzzleData.boardData = processed_puzzle;
+  const storageData = {
+    boardData: processed_puzzle,
+    errors: puzzleData.errors,
+    completion: puzzleData.completion
+  }
 
-  localStorage.setItem(puzzle_id, JSON.stringify(puzzleData));
+  localStorage.setItem(puzzle_id, JSON.stringify(storageData));
   return true;
 }
 
