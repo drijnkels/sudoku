@@ -7,7 +7,7 @@ import {
   getAllNotes,
   validateBoard,
   removeNotesAfterDigit,
-  testMove
+  testMove, boardToString
 } from "@/scripts/utils";
 import {saveToLocalStorage, loadFromLocalStorage} from "@/scripts/persistence";
 import {mediumSolver} from "@/scripts/solver";
@@ -221,16 +221,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     }
 
     // Create the board sequence in case we need it for the solutions
-    let board_sequence = '';
-    for (let r = 0; r < completedBoard.length; r++) {
-      for (let c = 0; c < completedBoard[r].length; c++) {
-        board_sequence += completedBoard[r][c].digit;
-        if ((r * completedBoard[r].length + c + 1) % 9 === 0) {
-          board_sequence += ' ';
-        }
-      }
-    }
-    // console.log(board_sequence)
+    boardToString(completedBoard)
     updateBoardData(completedBoard);
   }
 

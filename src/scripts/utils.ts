@@ -23,6 +23,19 @@ export const stringToBoard = (boardString: string): {error: string} | Board => {
       ));
 }
 
+export const boardToString = (board: Board) => {
+    let board_sequence = '';
+    for (let r = 0; r < board.length; r++) {
+        for (let c = 0; c < board[r].length; c++) {
+            board_sequence += board[r][c].digit;
+            if ((r * board[r].length + c + 1) % 9 === 0) {
+                board_sequence += ' ';
+            }
+        }
+    }
+    console.log(board_sequence)
+}
+
 // Test if a group is completely filled, 1 to 9
 const validateGroup = (group: number[]) => {
     group = group.filter((n) => n != 0);
@@ -138,7 +151,6 @@ export const getAllNotes = (boardData: Board) => {
                 blockedDigits.add(digit_in_block);
             }
 
-            const cell_notes = [];
             for (let digit = 1; digit < 10; digit++) {
                 if (!blockedDigits.has(digit)) {
                     boardData[r][c].notes.add(digit)
