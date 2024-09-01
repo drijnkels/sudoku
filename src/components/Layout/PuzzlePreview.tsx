@@ -24,11 +24,11 @@ export default function PuzzlePreview({puzzle}: {puzzle: Puzzle}){
   }
 
   return (
-    <a href={puzzle.url} className='cursor-pointer'>
+    <a href={puzzle.url} className='cursor-pointer shadow p-2 rounded-xl bg-white'>
       <div className='text-center font-bold'>{puzzle.name}</div>
       <div className='text-center text-sm mb-2'>Complete: {completion}%</div>
       <div>
-        <div className='border-2 border-slate-700 transition-colors hover:bg-sky-100'>
+        <div className='border-2 border-slate-700 transition-colors bg-white hover:bg-sky-50 rounded-lg overflow-hidden'>
           {
             boardData.map((row, rowIndex) => (
               <div key={rowIndex}

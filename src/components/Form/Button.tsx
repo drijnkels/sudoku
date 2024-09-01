@@ -5,7 +5,7 @@ export const buttonThemes = {
     'px-4 py-2 gap-1.5',
     'font-sans'
   ],
-  primary: 'shadow bg-primary font-medium text-center focus-visible:outline-none align-middle py-1 px-2 text-white border rounded-xl',
+  primary: 'shadow bg-primary font-medium text-center focus-visible:outline-none align-middle py-1 px-2 text-white rounded-xl',
   secondary: 'font-semibold bg-stone-200 shadow text-[#231645] transition-all duration-200 text-zinc-800 whitespace-nowrap rounded-xl h-11 px-3',
   plain: 'hover:bg-zinc-100 transition-all duration-300',
   outline: 'border-zinc-950/10 text-zinc-950',

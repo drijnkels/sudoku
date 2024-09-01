@@ -1,7 +1,7 @@
 import { useContext} from 'react';
 import {NotesContext} from "@/Context/NotesContext";
 import {PencilIcon, ArrowUturnLeftIcon, TrashIcon, LightBulbIcon} from "@heroicons/react/24/outline";
-import Button from "@/components/Controls/DigitButton";
+import DigitButton from "@/components/Controls/DigitButton";
 
 type ControlsType = {
   setDigit: (digit:number) => void
@@ -23,9 +23,12 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
         {/* Special controls to change board settings */}
         <div className='grid grid-cols-4 lg:grid-cols-3 gap-2'>
           <button onClick={() => setNotesActive(!notesActive)} aria-pressed={false} aria-label='Toggle making notes'>
-            <div className={`flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`}>
-              <PencilIcon className={`${iconBtnClasses}`}/>
-              Notes
+            <div className={`flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm text-zinc-600`}>
+              <div className={`flex flex-col items-center p-2 rounded-xl ${notesActive ? 'bg-emerald-100 shadow' : ''}`}>
+                <PencilIcon className={`${iconBtnClasses}`}/>
+                Notes
+              </div>
+
             </div>
           </button>
           <button onClick={undoLastMove} aria-label='Undo last move'>
@@ -51,7 +54,7 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
         {/* Change the value of a cell to a new digit */}
         <div className='grid grid-cols-9 lg:grid-cols-3 gap-2 md:gap-4 text-xl lg:text-2xl'>
           {digits.map((d, digitIndex) =>
-            <Button key={digitIndex} customBg={notesActive ? 'bg-emerald-400' : 'bg-sky-100'} onClick={() => setDigit(d)}>{d}</Button>
+            <DigitButton key={digitIndex} notesActive={notesActive} onClick={() => setDigit(d)}>{d}</DigitButton>
           )}
         </div>
 

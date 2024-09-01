@@ -56,7 +56,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
       <NotesContext.Provider value={{ notesActive, setNotesActive }}>
         <div className='flex-1 flex flex-col lg:flex-row gap-4 mb-8 w-[585px]'>
           <div className='flex flex-col gap-4 w-full'>
-            <div className="">
+            <div className="text-white">
               <div className="font-bold text-lg">{title}:  {completion}%</div>
               <div>
               {
