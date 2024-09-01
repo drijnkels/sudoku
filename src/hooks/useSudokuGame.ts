@@ -10,7 +10,14 @@ import {
   testMove, boardToString
 } from "@/scripts/utils";
 import {saveToLocalStorage, loadFromLocalStorage} from "@/scripts/persistence";
-import {findNakedPairs, findNakedTriples, findPointingPairs, mediumSolver, solveHiddenSingles} from "@/scripts/solver";
+import {
+  findNakedPairs,
+  findNakedTriples,
+  findPointingPairs,
+  sudokuSolver,
+  solveHiddenSingles,
+  createHint
+} from "@/scripts/solver";
 
 // Initialize component with empty board so the UI does not flash
 const emptyBoard: Board = [];
@@ -27,13 +34,16 @@ for (let r = 0; r < 9; r++) {
 
 export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {error: string}, solutionBoard: Board | {error: string}) => {
   const [boardData, setBoardData] = useState<Board>(emptyBoard);
-  const [gameHistory, setGameHistory] = useState<Board[]>([]);
-  const [activeCell, setActiveCell] = useState<GridLoc>({r: 9, c: 9});
-  const [cellToValidate, setCellToValidate] = useState<GridLoc>();
-  const [solvedBoard, setSolvedBoard] = useState(false);
+  const [gameHistory, setGameHistory] = useState<Board[]>([]); // Allows the user to undo moves, TODO: Store in localStorage
+  const [activeCell, setActiveCell] = useState<GridLoc>({r: 9, c: 9}); // Default to a Cell of the board
+  const [hintCell, setHintCell] = useState<GridLoc | undefined>(undefined)
+  const [cellToValidate, setCellToValidate] = useState<GridLoc>(); // In order to give the use a chance to fix a mistake we validate cells on the next move
+  const [solvedBoard, setSolvedBoard] = useState(false); // Has the board been completed, will be set on load if a completed board is in localStorage
   const [notesActive, setNotesActive] = useState(false);
-  const [errors, setErrors] = useState(0);
-  const [completion, setCompletion] = useState(0);
+  const [errors, setErrors] = useState(0); // Number of errors made, stored in localStorage
+  const [completion, setCompletion] = useState(0); // Percentage of puzzle completion
+  const [hintLevel, setHintLevel] = useState(0) // Hint level has 3 settings, level 0 = highlight cell, 1 = explain strategy, 3 = fill in cell
+  const [hint, setHint] = useState('');
 
   // To calculate the progress, find the number of empty cells in the original puzzle
   const emptyCells = useMemo(() =>
@@ -117,6 +127,9 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     currentBoardData = removeNotesAfterDigit(currentBoardData, activeCell, digit);
     currentBoardData[activeCell.r][activeCell.c] = currentCellData;
 
+    // Reset hints to prepare for the next Cell
+    resetHintLevel()
+
     // Update the board
     updateBoardData(currentBoardData);
   }
@@ -199,6 +212,7 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     updateBoardData(lastBoardState);
   }, [activeCell, gameHistory, solvedBoard])
 
+  // Add all possible notes to each Cell
   const handleGetAllNotes = () => {
     const boardWithNotes = getAllNotes(boardData);
     if ('error' in boardWithNotes) {
@@ -208,28 +222,33 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     updateBoardData(boardWithNotes);
   }
 
+  // Run the Sudoku solver to attempt the complete the board, can get stuck on evil puzzles
   const handleSolveBoard = () => {
+    // Make sure there is a solution to test moves against
+    // TODO: Not really necessary anymore as the solver can solve board without it
     if (!solutionBoard) {
       console.error('Not a valid solutionBoard to test against')
       return;
     }
 
-    const completedBoard = mediumSolver(boardData, solutionBoard as Board);
+    const completedBoard = sudokuSolver(boardData, solutionBoard as Board);
     if ('error' in completedBoard) {
       console.error('Error while solving the board');
       return;
     }
 
-    // Create the board sequence in case we need it for the solutions
+    // Log the board sequence to the console in case we need it for the solution
     boardToString(completedBoard)
+    // Update the UI with the board filled in
     updateBoardData(completedBoard);
   }
 
+  // Run a specific solving strategy in Debugging mode
   const handleStrategy = (strategy: string) => {
     let updatedBoard = boardData;
     switch(strategy){
       case 'hidden_singles':
-        const single_result = solveHiddenSingles(boardData, solutionBoard)
+        const single_result = solveHiddenSingles(boardData, solutionBoard as Board)
         updatedBoard = single_result?.board
         break;
       case 'naked_pairs':
@@ -251,9 +270,62 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     updateBoardData(updatedBoard);
   }
 
+  const requestHint = () => {
+    const result = createHint(boardData, solutionBoard as Board)
+    if ('error' in result) {
+      console.error('Could not find a hint for this board')
+      return;
+    }
+    const hintData = result[0];
+
+    // At hint level 0 - Only indicate which cell the user should focus on
+    if (hintLevel == 0) {
+      setHintCell({r: hintData.r, c:hintData.c});
+      setHint('')
+    }
+    // Hint level 1 - Give an idea of which strategy to use
+    if (hintLevel == 1) {
+      setHintCell({r: hintData.r, c: hintData.c});
+      if (hintData.type == 'solve'){
+        setHint('Only one digit is possible');
+      } else if (hintData.type == 'hidden_single') {
+        setHint('Only one digit is possible in this cell in this ' + hintData.direction)
+      } else if (hintData.type == 'naked_pair') {
+        setHint('There is a naked pair in this ' + hintData.direction)
+      } else {
+        console.error(`No hint available for ${hintData.type}`)
+      }
+    }
+    // Hint level 2 - Give the actual answer for a cell and why
+    if (hintLevel == 2) {
+      setHintCell({r: hintData.r, c: hintData.c});
+      if (hintData.type == 'solve') {
+        setHint(`Only the digit ${hintData.digit} is possible`);
+      } else if (hintData.type == 'hidden_single') {
+        setHint(`Only the digit ${hintData.digit} is possible in this cell in this ` + hintData.direction)
+      } else if (hintData.type == 'naked_pair') {
+        setHint(`There is a naked pair. Remove ${hintData.digits.join(', ')} from cells in this block not in this ${hintData.direction}`)
+      } else {
+        console.error(`No hint available for ${hintData.type}`)
+      }
+    }
+    setHintLevel(prevState =>  (prevState + 1) % 3)
+  }
+
+  const resetHintCell = () => {
+    setHintCell(undefined)
+    setHint('')
+  }
+
+  const resetHintLevel = () => {
+    resetHintCell()
+    setHintLevel(0)
+  }
+
   return {
     boardData, setBoardData,
     activeCell,
+    hintCell,
     solvedBoard,
     notesActive, setNotesActive,
     errors,
@@ -264,6 +336,9 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     handleUndoLastMove,
     handleGetAllNotes,
     handleSolveBoard,
-    handleStrategy
+    handleStrategy,
+    requestHint,
+    hint,
+    resetHintCell,
   }
 }

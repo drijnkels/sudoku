@@ -8,14 +8,17 @@ type SudokuBoardTypes = {
   solvedBoard: boolean,
   activeCell: GridLoc,
   setActiveCell: (gridLoc: GridLoc) => void;
+  hintCell: GridLoc | undefined;
+  resetHintCell: () => void;
   debugMode: boolean
 }
 
-const SudokuBoard = memo(function SudokuBoard({boardData, solvedBoard, activeCell, setActiveCell, debugMode}: SudokuBoardTypes) {
+const SudokuBoard = memo(function SudokuBoard({boardData, solvedBoard, activeCell, setActiveCell, hintCell, resetHintCell, debugMode}: SudokuBoardTypes) {
   const squares = [[0,1,2], [3,4,5], [6,7,8]];
   const [activeSquare, setActiveSquare] = useState({rows: [9,9,9], columns: [9,9,9]});
 
   const handleSelectCell = (gridLoc: GridLoc) => {
+    resetHintCell()
     setActiveCell(gridLoc);
     setActiveSquare({
       rows: inSquare(gridLoc.r),
@@ -35,6 +38,11 @@ const SudokuBoard = memo(function SudokuBoard({boardData, solvedBoard, activeCel
   }
 
   const highlightCell = (gridLoc: GridLoc) => {
+    if (hintCell) {
+      if (hintCell.r == gridLoc.r && hintCell.c == gridLoc.c) {
+        return 'bg-amber-200/70'
+      }
+    }
     // Highlight as selected cell
     if (gridLoc.r == activeCell.r && gridLoc.c == activeCell.c) {
       return 'bg-indigo-200/70';

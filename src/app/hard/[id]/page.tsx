@@ -21,7 +21,7 @@ export default function HardPuzzle({ params }: { params: { id: string }}) {
 
       <div className='w-full mb-6 text-slate-200'><a href='/hard'>{'<-- Return to puzzle selection'}</a></div>
 
-      <div className="flex flex-col gap-4 max-w-fit">
+      <div className="flex flex-col gap-4 max-w-fit mx-auto">
         <SudokuGame title='Sudoku - Hard' puzzle={puzzle} solution={solution} />
       </div>
     </div>
