@@ -1,8 +1,8 @@
 'use client';
 
 import SudokuGame from "@/components/SudokuGame";
-import { evilBoards } from "@/components/boards/boards";
-import { evilSolutions } from "@/components/boards/solutions";
+import { evilBoards } from "@/lib/boards/boards";
+import { evilSolutions } from "@/lib/boards/solutions";
 
 export default function EasyPuzzle({ params }: { params: { id: string }}) {
   // Load puzzle data
@@ -18,7 +18,7 @@ export default function EasyPuzzle({ params }: { params: { id: string }}) {
 
   return (
     <div className='p-4'>
-      <div className='w-full mb-4 text-slate-400'><a href='/?difficulty=evil'>{'<-- Return to puzzle selection'}</a></div>
+      <div className='w-full mb-4 text-slate-400'><a href='/evil'>{'<-- Return to puzzle selection'}</a></div>
       <div className="flex flex-col gap-4 max-w-fit">
         <SudokuGame title='Sudoku - Evil' puzzle={puzzle} solution={solution} />
       </div>

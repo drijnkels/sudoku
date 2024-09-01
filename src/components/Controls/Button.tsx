@@ -11,7 +11,7 @@ export default function Button ({children, type = "button", customBg, ariaToggle
     <button
       type={type}
       onClick={onClick}
-      className={`flex justify-center items-center h-[50px] w-[50px] md:h-[55px] md:w-[55px] lg:h-[75px] lg:w-[75px] border border-slate-300 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors ${customBg ?? 'bg-sky-100'}`}
+      className={`flex justify-center items-center w-full py-2 px-4 border border-slate-300 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors ${customBg ?? 'bg-sky-100'}`}
       aria-pressed={ariaToggle ? false : undefined}
       {...(ariaLabel ? { 'aria-label': ariaLabel } : {})}
     >

@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useState} from "react";
+import {useState} from "react";
 import Cell from "@/components/Board/Cell";
 import {Board, GridLoc} from "@/types/types";
 import {memo} from "react";
