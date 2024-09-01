@@ -23,6 +23,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
   const {
     boardData, setBoardData,
     activeCell,
+    hintCell,
     solvedBoard,
     notesActive, setNotesActive,
     errors,
@@ -33,7 +34,10 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
     handleUndoLastMove,
     handleGetAllNotes,
     handleSolveBoard,
-    handleStrategy
+    handleStrategy,
+    requestHint,
+    hint,
+    resetHintCell
   } = useSudokuGame(
     puzzle.puzzle_id, initialBoardData, solutionBoard
   )
@@ -69,10 +73,20 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
             <SudokuBoard
               boardData={boardData}
               activeCell={activeCell}
+              hintCell={hintCell}
+              hint={hint}
+              resetHintCell={resetHintCell}
               setActiveCell={(gridLoc) => handleSetActiveCell(gridLoc)}
               solvedBoard={solvedBoard}
               debugMode={debugMode}
             />
+
+            {
+              hint &&
+              <div>
+                <div className='bg-white rounded-xl p-2 w-fit mx-auto shadow text-sm'>{hint}</div>
+              </div>
+            }
           </div>
 
           <Controls
@@ -83,6 +97,7 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
             getAllNotes={() => handleGetAllNotes()}
             handleStrategy={handleStrategy}
             debugMode={debugMode}
+            requestHint={requestHint}
           />
         </div>
 

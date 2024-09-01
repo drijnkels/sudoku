@@ -10,9 +10,10 @@ type ControlsType = {
   solveBoard: () => void
   getAllNotes: () => void,
   handleStrategy: (strategy: string) => void
-  debugMode: boolean
+  debugMode: boolean,
+  requestHint: () => void
 }
-export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard, getAllNotes, handleStrategy, debugMode}: ControlsType){
+export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard, getAllNotes, handleStrategy, debugMode, requestHint}: ControlsType){
   const { notesActive, setNotesActive} = useContext(NotesContext);
   const digits = [1,2,3,4,5,6,7,8,9];
   const iconBtnClasses:string = 'size-4 md:size-6';
@@ -43,7 +44,7 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
               Empty
             </div>
           </button>
-          <button onClick={() => console.log('Get a hint')} aria-label='Undo last move'>
+          <button onClick={requestHint} aria-label='Undo last move'>
             <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
               <LightBulbIcon className={iconBtnClasses}/>
               Hint
