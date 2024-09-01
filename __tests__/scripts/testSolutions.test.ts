@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { easySolutions, mediumSolutions, hardSolutions, evilSolutions } from '@/components/boards/solutions';
+import { easySolutions, mediumSolutions, hardSolutions, evilSolutions } from '@/lib/boards/solutions';
 import { stringToBoard, validateBoard } from "@/scripts/utils";
 
 describe('validateSolutions', () => {

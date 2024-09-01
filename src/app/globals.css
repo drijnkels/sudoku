@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background: white;
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+button, a {
+  transition: all 300ms;
+}
+
+/* Backgrounds */
+.bg-primary {
+  background: linear-gradient(180deg, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0)), #437fff;
+}
+
+.bg-primary:hover {
+  background: linear-gradient(180deg, hsla(0, 0%, 100%, .14), hsla(0, 0%, 100%, 0)), #437fff;
+}
+
+/* Text */
+.text-primary {
+  color: #437fff;
 }
