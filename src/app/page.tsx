@@ -1,7 +1,7 @@
 'use client'
 
 import { clearAppData } from "@/scripts/persistence";
-import Button from "@/components/Controls/Button";
+import Button from "@/components/Controls/DigitButton";
 import Card from "@/components/Panels/Card";
 import LinkButton from "@/components/Elements/LinkButton";
 

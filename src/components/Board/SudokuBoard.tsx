@@ -35,10 +35,12 @@ const SudokuBoard = memo(function SudokuBoard({boardData, solvedBoard, activeCel
   }
 
   const highlightCell = (gridLoc: GridLoc) => {
+    // Highlight as selected cell
     if (gridLoc.r == activeCell.r && gridLoc.c == activeCell.c) {
-      return 'bg-sky-200/70';
+      return 'bg-violet-200/70';
     }
 
+    // Highlight as row, col or block cell
     if (gridLoc.r == activeCell.r) {
       return 'bg-sky-200/30';
     }
@@ -54,7 +56,7 @@ const SudokuBoard = memo(function SudokuBoard({boardData, solvedBoard, activeCel
   }
 
   return (
-    <div className='border-2 border-slate-700 w-fit m-auto'>
+    <div className='border-2 border-slate-700 w-fit m-auto rounded-3xl overflow-hidden ring-1 ring-slate-100 bg-slate-100'>
       {debugMode && <div className='flex divide-x divide-slate-300 border-b-2 border-b-gray-600 bg-gray-100'>
         <div className='w-[45px] border-r-2 border-r-gray-600'> </div>
         <div className='flex-1 py-2 text-center'>0</div>

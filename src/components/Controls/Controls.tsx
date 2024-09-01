@@ -1,7 +1,7 @@
 import { useContext} from 'react';
 import {NotesContext} from "@/Context/NotesContext";
-import { PencilIcon, ArrowUturnLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
-import Button from "@/components/Controls/Button";
+import {PencilIcon, ArrowUturnLeftIcon, TrashIcon, LightBulbIcon} from "@heroicons/react/24/outline";
+import Button from "@/components/Controls/DigitButton";
 
 type ControlsType = {
   setDigit: (digit:number) => void
@@ -15,31 +15,37 @@ type ControlsType = {
 export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard, getAllNotes, handleStrategy, debugMode}: ControlsType){
   const { notesActive, setNotesActive} = useContext(NotesContext);
   const digits = [1,2,3,4,5,6,7,8,9];
-  const iconBtnClasses:string = ' w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-zinc-400';
+  const iconBtnClasses:string = 'size-4 md:size-6';
   return(
     <div>
       <div className="font-bold text-lg mb-4 hidden lg:block">Controls</div>
       <div className='flex justify-center flex-col gap-4'>
         {/* Special controls to change board settings */}
-        <div className='grid grid-cols-9 lg:grid-cols-3 gap-2'>
-          <Button onClick={() => setNotesActive(!notesActive)} customBg={notesActive ? 'bg-green-400' : 'bg-sky-100'} ariaToggle={true} ariaLabel='Toggle making notes'>
-            <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
-              <PencilIcon className={`${iconBtnClasses} ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`} />
+        <div className='grid grid-cols-4 lg:grid-cols-3 gap-2'>
+          <button onClick={() => setNotesActive(!notesActive)} aria-pressed={false} aria-label='Toggle making notes'>
+            <div className={`flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm ${notesActive ? 'text-emerald-500' : 'text-zinc-400'}`}>
+              <PencilIcon className={`${iconBtnClasses}`}/>
               Notes
             </div>
-          </Button>
-          <Button onClick={undoLastMove} ariaLabel='Undo last move'>
+          </button>
+          <button onClick={undoLastMove} aria-label='Undo last move'>
             <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
               <ArrowUturnLeftIcon className={iconBtnClasses}/>
               Undo
             </div>
-          </Button>
-          <Button onClick={emptyCell} ariaLabel='Empty cell contents'>
+          </button>
+          <button onClick={emptyCell} aria-label='Empty cell contents'>
             <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
               <TrashIcon className={iconBtnClasses}/>
               Empty
             </div>
-          </Button>
+          </button>
+          <button onClick={() => console.log('Get a hint')} aria-label='Undo last move'>
+            <div className='flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm'>
+              <LightBulbIcon className={iconBtnClasses}/>
+              Hint
+            </div>
+          </button>
         </div>
 
         {/* Change the value of a cell to a new digit */}
@@ -52,13 +58,13 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
         <div className='grid grid-cols-2 gap-2'>
           <div
             onClick={getAllNotes}
-            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'
+            className='flex justify-center items-center w-full p-2 rounded-lg cursor-pointer transition-colors text-white bg-gradient-to-br from-blue-400 to-blue-600'
           >
             Fill in notes
           </div>
           <div
             onClick={solveBoard}
-            className='flex justify-center items-center w-full border border-slate-300 p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors bg-sky-100'
+            className='flex justify-center items-center w-full p-2 rounded-lg hover:bg-sky-400 cursor-pointer transition-colors text-white bg-gradient-to-br from-blue-400 to-blue-600'
           >
             Solve the board
           </div>

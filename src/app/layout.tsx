@@ -17,9 +17,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className='h-full'>
-      <body className={`${inter.className} w-full h-full flex flex-col bg-stone-50`}>
-        <header className='bg-blue-600 text-2xl font-bold text-white p-4 text-center border-b-4 border-b-gray-300'>
+    <html lang="en">
+      <body className={`${inter.className} w-full h-full flex flex-col`}>
+        <header className='bg-blue-600 text-2xl font-bold text-white p-4 text-center shadow-md'>
           <a href="/">Wingu Sudoku</a>
         </header>
         <main className="flex-1 flex flex-col items-center w-full max-w-screen-lg mx-auto">
