@@ -1,11 +1,12 @@
-import {Board} from "@/types/types";
+import {Board, CellProps} from "@/types/types";
 import {deepCopy, getAllNotes, removeNotesAfterDigit, testMove} from "@/scripts/utils";
-import {b} from "vitest/dist/suite-IbNSsUWN";
+
+type MoveProps = {r: number, c: number, digit: number, digits?: number[], type: string, direction: string}
 
 const getCellsInBlock = (r: number, c: number, boardData: Board) => {
   const first_r = Math.floor(r / 3) * 3;
   const first_c = Math.floor(c / 3) * 3;
-  const square = [];
+  const square: CellProps[] = [];
 
   // Check square
   for (let r = first_r; r < first_r + 3; r++) {
@@ -176,7 +177,11 @@ const fillSolvedCells = (board: Board, solution: Board, hint: Boolean = false) =
  * @param solution
  * @param hint
  */
-export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean = false) => {
+type solveHiddenSinglesResponseType =
+  | {made_changes: boolean, board?: never, moves: MoveProps[]}
+  | {made_changes: boolean, board: Board, moves: MoveProps[]}
+
+export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean = false): solveHiddenSinglesResponseType => {
   let made_changes = false;
   const moves = [];
 
@@ -220,7 +225,7 @@ export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean 
         if (unique_digit) {
           if (!testMove(solution, {r: r, c: c}, cellNote)) {
             console.error('Invalid solution, hidden singles - row', {r: r, c: c}, unique_digit)
-            return
+            return {made_changes: false, moves: []}
           }
 
           if (hint) {
@@ -258,7 +263,7 @@ export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean 
         if (unique_digit) {
           if (!testMove(solution, {r: r, c: c}, cellNote)) {
             console.error('Invalid solution, hidden singles - col', {r: r, c: c}, unique_digit)
-            return
+            return {made_changes: false, moves: []}
           }
 
           if (hint) {
@@ -295,7 +300,7 @@ export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean 
         if (unique_digit) {
           if (!testMove(solution, {r: r, c: c}, cellNote)) {
             console.error('Invalid solution, hidden singles - block', {r: r, c: c}, unique_digit)
-            return
+            return {made_changes: false, moves: []}
           }
 
           if (hint) {
@@ -314,7 +319,7 @@ export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean 
     }
   }
 
-  return {made_changes, moves, board}
+  return {made_changes: made_changes, moves: moves, board: board!}
 }
 
 /**
@@ -323,11 +328,12 @@ export const solveHiddenSingles = (board: Board, solution: Board, hint: Boolean 
  * @param board
  * @param hint boolean
  */
-export const findNakedPairs = (board, hint: boolean = false) => {
+type findNakedPairsResponseType =
+  | {made_changes: boolean, board?: never, moves: MoveProps[]}
+  | {made_changes: boolean, board: Board, moves: MoveProps[]}
+export const findNakedPairs = (board: Board, hint: boolean = false): findNakedPairsResponseType => {
   let made_changes = false;
   const moves = [];
-
-  console.log('Running for hint', hint)
 
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
@@ -370,7 +376,7 @@ export const findNakedPairs = (board, hint: boolean = false) => {
               return {made_changes: true, moves: [{r: r, c: c, digit: 0, digits: pair, type: 'naked_pair', direction: 'block'}]}
             }
 
-            removeNotesFromOthersInBlock(board, r, c, pair, [cellInBlock.r, cellInBlock.c]);
+            removeNotesFromOthersInBlock(board, r, c, pair, [cellInBlock.r!, cellInBlock.c!]);
             moves.push({r: r, c: c, digit: 0, digits: pair, type: 'naked_pair', direction: 'block'})
             made_changes = true;
             break;
@@ -390,7 +396,7 @@ export const findNakedPairs = (board, hint: boolean = false) => {
  * TODO: Could this handle Blind Triples?
  * @param board
  */
-export const findNakedTriples = (board) => {
+export const findNakedTriples = (board: Board) => {
   let made_changes = false;
 
   for (let r = 0; r < 9; r++) {
@@ -508,7 +514,7 @@ export const findNakedTriples = (board) => {
   return {made_changes, board}
 }
 
-export const findPointingPairs = (board) => {
+export const findPointingPairs = (board: Board) => {
   let made_changes = false;
 
   for (let r = 0; r < 9; r += 3) {
@@ -560,9 +566,9 @@ export const findPointingPairs = (board) => {
 
           if ([...overlapping_notes].length > 0) {
             if (cellInBlock.r === neighbourCellInBlock.r) {
-              removeNotesFromOthersInRow(board, cellInBlock.r, [...overlapping_notes], [c, c+1, c+2])
+              removeNotesFromOthersInRow(board, cellInBlock.r!, [...overlapping_notes], [c, c+1, c+2])
             } else if (cellInBlock.c === neighbourCellInBlock.c) {
-              removeNotesFromOthersInColumn(board, cellInBlock.c, [...overlapping_notes], [r, r+1, r+2])
+              removeNotesFromOthersInColumn(board, cellInBlock.c!, [...overlapping_notes], [r, r+1, r+2])
             }
           }
         }
@@ -594,10 +600,10 @@ const removeNotesFromOthersInColumn = (board: Board, col: number, pair: number[]
   }
 }
 
-const removeNotesFromOthersInBlock = (board: Board, row: number, col: number, pair: number[], excludeCells: number[]) => {
+const removeNotesFromOthersInBlock = (board: Board, row: number, col: number, pair: number[], excludeCells: (number)[]) => {
   const cellsInBlock = getCellsInBlock(row, col, board);
   for (let cell of cellsInBlock) {
-    if (!excludeCells.includes(cell.r) && !excludeCells.includes(cell.c) && cell.digit === 0) {
+    if (!excludeCells.includes(cell.r!) && !excludeCells.includes(cell.c!) && cell.digit === 0) {
       pair.forEach(digit => cell.notes.delete(digit))
     }
   }

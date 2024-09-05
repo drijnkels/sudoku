@@ -248,12 +248,12 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
     let updatedBoard = boardData;
     switch(strategy){
       case 'hidden_singles':
-        const single_result = solveHiddenSingles(boardData, solutionBoard as Board)
-        updatedBoard = single_result?.board
+        const single_result = solveHiddenSingles(boardData, solutionBoard as Board, false)
+        updatedBoard = single_result.board!
         break;
       case 'naked_pairs':
         const pair_result = findNakedPairs(boardData)
-        updatedBoard = pair_result.board;
+        updatedBoard = pair_result.board!;
         break;
       case 'naked_triples':
         const triple_result = findNakedTriples(boardData)
@@ -304,7 +304,8 @@ export const useSudokuGame = (puzzle_id: string, initialBoardData: Board | {erro
       } else if (hintData.type == 'hidden_single') {
         setHint(`Only the digit ${hintData.digit} is possible in this cell in this ` + hintData.direction)
       } else if (hintData.type == 'naked_pair') {
-        setHint(`There is a naked pair. Remove ${hintData.digits.join(', ')} from cells in this block not in this ${hintData.direction}`)
+        // @ts-ignore TS fails to recognize digits here
+        setHint(`There is a naked pair. Remove ${hintData.digits!.join(', ')} from cells in this block not in this ${hintData.direction}`)
       } else {
         console.error(`No hint available for ${hintData.type}`)
       }

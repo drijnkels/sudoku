@@ -16,7 +16,7 @@ export const stringToBoard = (boardString: string): {error: string} | Board => {
         (digit) => (
           {
               digit: parseInt(digit),
-              state: (digit == 0 ? 'free' : 'locked'),
+              state: (parseInt(digit) == 0 ? 'free' : 'locked'),
               notes: new Set()
           }
         )

@@ -74,7 +74,6 @@ export default function SudokuGame({ title, puzzle, solution }: SudokuGame){
               boardData={boardData}
               activeCell={activeCell}
               hintCell={hintCell}
-              hint={hint}
               resetHintCell={resetHintCell}
               setActiveCell={(gridLoc) => handleSetActiveCell(gridLoc)}
               solvedBoard={solvedBoard}

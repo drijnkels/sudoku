@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import {Suspense} from "react";
 import {Loading} from "@/components/Loading";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,11 +30,18 @@ export default function RootLayout({
               {children}
             </Suspense>
           </div>
-          <div className='mb-4 text-sm'>
-            Version: 0.9.8
+          <div className='mb-4 text-sm text-center'>
+            Version: 0.9.8<br/>
+            Feedback? Let me know on <a rel="me" href="https://mastodon.social/@noctemz">Mastodon</a>
           </div>
         </main>
       </body>
+      <Script
+        async
+        defer
+        src="https://umami.dapa.app/script.js"
+        data-website-id="38da4290-814c-4d13-ad1d-2a04ae9dd728"
+      />
     </html>
   )
 }
