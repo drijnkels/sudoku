@@ -29,9 +29,9 @@ export default function RootLayout({
               {children}
             </Suspense>
           </div>
-          <div className='mb-4 text-sm text-center'>
-            Version: 0.9.8<br/>
-            Feedback? Let me know on <a rel="me" href="https://mastodon.social/@noctemz">Mastodon</a>
+          <div className='mb-4 text-sm text-center mx-auto text-slate-500'>
+            Feedback?<br />Find me on <a className='text-blue-600' rel="me" href="https://mastodon.social/@noctemz">Mastodon</a>
+            <div>Version: 0.9.8</div>
           </div>
         </main>
       </body>
