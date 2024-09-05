@@ -35,12 +35,6 @@ export default function RootLayout({
           </div>
         </main>
       </body>
-      <Script
-        async
-        defer
-        src="https://umami.dapa.app/script.js"
-        data-website-id="38da4290-814c-4d13-ad1d-2a04ae9dd728"
-      />
     </html>
   )
 }
