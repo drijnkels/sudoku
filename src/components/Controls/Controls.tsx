@@ -18,11 +18,11 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
   const digits = [1,2,3,4,5,6,7,8,9];
   const iconBtnClasses:string = 'size-4 md:size-6';
   return(
-    <div>
+    <div className={'w-[550px] mx-auto'}>
       <div className="font-bold text-lg mb-4 hidden lg:block">Controls</div>
       <div className='flex justify-center flex-col gap-4'>
         {/* Special controls to change board settings */}
-        <div className='grid grid-cols-4 lg:grid-cols-3 gap-2'>
+        <div className='grid grid-cols-4 gap-2'>
           <button onClick={() => setNotesActive(!notesActive)} aria-pressed={false} aria-label='Toggle making notes'>
             <div className={`flex flex-col md:gap-1 items-center text-center text-[12px] md:text-sm text-zinc-600`}>
               <div className={`flex flex-col items-center p-2 rounded-xl ${notesActive ? 'bg-emerald-100 shadow' : ''}`}>
@@ -53,7 +53,7 @@ export default function Controls({setDigit, undoLastMove, emptyCell, solveBoard,
         </div>
 
         {/* Change the value of a cell to a new digit */}
-        <div className='grid grid-cols-9 lg:grid-cols-3 gap-2 md:gap-4 text-xl lg:text-2xl'>
+        <div className='grid grid-cols-9 gap-2 md:gap-4 text-xl lg:text-2xl'>
           {digits.map((d, digitIndex) =>
             <DigitButton key={digitIndex} notesActive={notesActive} onClick={() => setDigit(d)}>{d}</DigitButton>
           )}

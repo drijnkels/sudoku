@@ -13,10 +13,10 @@ type Props = {
 export default function PuzzleOverview({puzzles, type, title, description = ''}: Props) {
   return(
     <div className='p-8 flex flex-col gap-4 w-full h-full'>
-      <div className={'w-full mb-2 text-slate-200'}>
+      <div className={'w-full mb-2 text-slate-700'}>
         <a href={'/'}>{`<-- Return to menu`}</a>
       </div>
-      <div className='text-white'>
+      <div className=''>
         <div className='text-center text-lg font-semibold'>
           {title}
         </div>

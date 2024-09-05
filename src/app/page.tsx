@@ -14,7 +14,7 @@ export default function Home() {
     <div className='p-12 w-full h-full flex-1 flex flex-col'>
 
       <div className='w-fit flex flex-col gap-4 max-w-lg min-w-32 mx-auto'>
-        <div className='text-center font-semibold text-2xl text-white mb-8'>Menu</div>
+        <div className='text-center font-semibold text-2xl text-blue-600 mb-8'>Menu</div>
         <LinkButton href={'/easy'}>Easy puzzles</LinkButton>
         <LinkButton href={'/medium'}>Medium puzzles</LinkButton>
         <LinkButton href={'/hard'}>Hard puzzles</LinkButton>
